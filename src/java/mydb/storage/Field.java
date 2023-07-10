@@ -10,7 +10,7 @@ import java.mydb.common.Type;
 public interface Field extends Serializable {
 
     /**
-     * 将表示该field的字节写入指定的DataOutputStream
+     * 表示将该字段（field）的字节写入指定的DataOutputStream
      * @param dos DataOutPutStream
      */
     void serialize(DataOutputStream dos) throws IOException;

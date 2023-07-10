@@ -66,6 +66,9 @@ public class StringField implements Field {
             dos.write((byte) 0);
     }
 
+    /**
+     * 用于比较指定字段和该字段的值
+     */
     public boolean compare(Predicate.Op op, Field value) {
         StringField stringField = (StringField) value;
         int cmpValue = this.value.compareTo(stringField.value);

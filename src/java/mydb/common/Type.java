@@ -50,8 +50,15 @@ public enum Type implements Serializable {
 
     public static final int STRING_LEN = 128;
 
+    /**
+     * @return 返回存储对应类型字段的字节数
+     */
     public abstract int getLen();
 
+    /**
+     * @param dis 读取的输入柳DataInputStream
+     * @return 返回与该对象类型相同的从dis中读取的Field对象
+     */
     public abstract Field parse(DataInputStream dis) throws ParseException;
 
 }
