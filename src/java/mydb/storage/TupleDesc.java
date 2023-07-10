@@ -4,11 +4,11 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * TupleDescÀàÓÃÓÚÃèÊöÒ»¸öÔª×é£¨tuple£©µÄÄ£Ê½£¨schema£©
+ * TupleDescç±»ç”¨äºæè¿°ä¸€ä¸ªå…ƒç»„ï¼ˆtupleï¼‰çš„æ¨¡å¼ï¼ˆschemaï¼‰
  */
 public class TupleDesc {
 
-    // ÄÚ²¿Àà£¬ÓÃÓÚ×éÖ¯Ã¿¸öÓòµÄĞÅÏ¢
+    // å†…éƒ¨ç±»ï¼Œç”¨äºç»„ç»‡æ¯ä¸ªåŸŸçš„ä¿¡æ¯
     public static class TDItem implements Serializable {
 
         @Serial

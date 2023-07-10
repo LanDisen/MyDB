@@ -1,10 +1,28 @@
 package java.mydb.storage;
 
 import java.io.*;
+import java.mydb.execution.Predicate;
+import java.mydb.common.Type;
 
 /**
- * Óò£¨Field£©µÄinterface¶¨Òå
+ * åŸŸï¼ˆFieldï¼‰çš„interfaceå®šä¹‰
  */
 public interface Field extends Serializable {
 
+    /**
+     * å°†è¡¨ç¤ºè¯¥fieldçš„å­—èŠ‚å†™å…¥æŒ‡å®šçš„DataOutputStream
+     * @param dos DataOutPutStream
+     */
+    void serialize(DataOutputStream dos) throws IOException;
+
+    boolean compare(Predicate.Op op, Field value);
+
+    Type getType();
+
+    @Override
+    int hashCode();
+    @Override
+    boolean equals(Object field);
+    @Override
+    String toString();
 }

@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 /**
- * TupleÀàÓÃÓÚÎ¬»¤Ôª×é£¨tuple£©ĞÅÏ¢
+ * Tupleç±»ç”¨äºç»´æŠ¤å…ƒç»„ï¼ˆtupleï¼‰ä¿¡æ¯
  */
 public class Tuple implements Serializable {
 
