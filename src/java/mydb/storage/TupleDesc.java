@@ -33,12 +33,13 @@ public class TupleDesc {
 
     }
 
+    private List<TupleDescItem> tupleDescItems;
+
     /**
      * @return 返回该TupleDesc对象所有字段TupleDescItems的迭代器
      */
     public Iterator<TupleDescItem> iterator() {
-        // TODO
-        return null;
+        return tupleDescItems.iterator();
     }
 
     private static final long serialVersionUID = 1L;
@@ -49,7 +50,12 @@ public class TupleDesc {
      * @param fieldNames 字段（field）名称数组，name可以为null
      */
     public TupleDesc(Type[] fieldTypes, String[] fieldNames) {
-        // TODO
+        tupleDescItems = new ArrayList<>();
+        int fieldNum = fieldTypes.length;
+        for (int i=0; i<fieldNum; i++) {
+            TupleDescItem item = new TupleDescItem(fieldTypes[i], fieldNames[i]);
+            tupleDescItems.add(item);
+        }
     }
 
     /**
@@ -57,15 +63,19 @@ public class TupleDesc {
      * @param fieldTypes 字段（field）类型数组
      */
     public TupleDesc(Type[] fieldTypes) {
-        // TODO
+        tupleDescItems = new ArrayList<>();
+        int fieldNum = fieldTypes.length;
+        for (Type fieldType : fieldTypes) {
+            TupleDescItem item = new TupleDescItem(fieldType, null);
+            tupleDescItems.add(item);
+        }
     }
 
     /**
      * @return 返回字段（fields）的数量
      */
     public int getFieldsNum() {
-        // TODO
-        return 0;
+        return tupleDescItems.size();
     }
 
     /**
@@ -75,8 +85,11 @@ public class TupleDesc {
      * @throws NoSuchElementException 如果index不是一个有效的field索引
      */
     public String getFieldName(int index) throws NoSuchElementException {
-        // TODO
-        return null;
+        // 索引越界抛出异常
+        if (index < 0 || index > tupleDescItems.size()) {
+            throw new NoSuchElementException("index " + index + " is not valid");
+        }
+        return tupleDescItems.get(index).fieldName;
     }
 
     /**
@@ -86,8 +99,11 @@ public class TupleDesc {
      * @throws NoSuchElementException 如果index不是一个有效的field索引
      */
     public Type getFieldType(int index) throws NoSuchElementException {
-        // TODO
-        return null;
+        // 索引越界抛出异常
+        if (index < 0 || index > tupleDescItems.size()) {
+            throw new NoSuchElementException("index " + index + " is not valid");
+        }
+        return tupleDescItems.get(index).fieldType;
     }
 
     /**
@@ -97,27 +113,39 @@ public class TupleDesc {
      * @throws NoSuchElementException 没有匹配的字段名称
      */
     public int fieldNameToIndex(String fieldName) throws NoSuchElementException {
-        // TODO
-        return 0;
+        if (fieldName == null) {
+            throw new NoSuchElementException("field name is null");
+        }
+        for (int i=0; i<tupleDescItems.size(); i++) {
+            if (fieldName.equals(getFieldName(i))) {
+                return i;
+            }
+        }
+        // 没找到对应的fieldName，抛出异常
+        throw new NoSuchElementException("field name " + fieldName + " is not founded");
     }
 
     /**
      * @return 返回元组（Tuple）的字节大小
      */
     public int getSize() {
-        // TODO
-        return 0;
+        int bytes = 0;
+        for (TupleDescItem item: tupleDescItems) {
+            bytes += item.fieldType.getLen();
+        }
+        return bytes;
     }
 
     /**
-     * 合并两个TupleDesc对象，新对象的字段数（fieldNum）为：td1.getFieldsNum() + td2.getFieldsNum()
+     * 合并两个TupleDesc对象
+     * 新对象的字段数（fieldNum）为：td1.getFieldsNum() + td2.getFieldsNum()
      * @param td1 TupleDesc对象
      * @param td2 TupleDesc对象
      * @return 新TupleDesc对象
      */
     public static TupleDesc merge(TupleDesc td1, TupleDesc td2) {
-        // TODO
-        return null;
+        td1.tupleDescItems.addAll(td2.tupleDescItems);
+        return td1;
     }
 
     /**
@@ -128,14 +156,39 @@ public class TupleDesc {
      */
     @Override
     public boolean equals(Object obj) {
-        // TODO
-        return false;
+        // 如果obj的类不是TupleDesc则不相同，返回false
+        if (!this.getClass().isInstance(obj)) {
+            return false;
+        }
+        TupleDesc td = (TupleDesc) obj;
+        int len = this.tupleDescItems.size();
+        // 判断两者的tupleDescItems是否具有相同的元素个数
+        if (len != td.tupleDescItems.size()) {
+            return false;
+        }
+        // 逐个元素比较fieldType是否相同
+        for (int i=0; i<len; i++) {
+            if (this.tupleDescItems.get(i).fieldType != td.tupleDescItems.get(i).fieldType)
+                return false;
+        }
+        return true;
     }
 
     @Override
     public int hashCode() {
-        // 如果需要使用TupleDesc作为HashMap的keys则实现该方法使得相同对象有相同的hashCode
-        throw new UnsupportedOperationException("unimplemented");
+        // 相同TupleDesc相同对象具有相同的hashCode
+        int magicNum = 2333333;
+        int code = 0;
+        int len = tupleDescItems.size();
+        for (int i=0; i<len; i++) {
+            Type type = tupleDescItems.get(i).fieldType;
+            if (type.equals(Type.INT_TYPE)) {
+                code += i * i * 4 % magicNum;
+            } else if (type.equals(Type.STRING_TYPE)) {
+                code += i * i * 7 % magicNum;
+            }
+        }
+        return code;
     }
 
     /**
@@ -144,7 +197,12 @@ public class TupleDesc {
      */
     @Override
     public String toString() {
-        // TODO
-        return "";
+        String str = "";
+        int len = this.tupleDescItems.size();
+        for (int i=0; i<len; i++) {
+            TupleDescItem item = this.tupleDescItems.get(i);
+            str += item.fieldType + "[" + i + "]" + item.fieldName + "[" + i + "]";
+        }
+        return str;
     }
 }
