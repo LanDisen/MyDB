@@ -4,11 +4,16 @@
     <file url="file://$PROJECT_DIR$/.gitignore" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/MyDb.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/Parser.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/java/mydb/common/Catalog.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/common/Type.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/common/Util.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/java/mydb/execution/OpIterator.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/java/mydb/execution/Operator.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/execution/Predicate.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/storage/Field.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/storage/IntField.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/java/mydb/storage/PageId.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/java/mydb/storage/RecordId.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/storage/StringField.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/storage/Tuple.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/storage/TupleDesc.java" charset="UTF-8" />
