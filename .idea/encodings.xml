@@ -5,11 +5,14 @@
     <file url="file://$PROJECT_DIR$/src/java/mydb/MyDb.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/Parser.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/common/Catalog.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/java/mydb/common/Database.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/common/Type.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/common/Util.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/execution/OpIterator.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/execution/Operator.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/execution/Predicate.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/java/mydb/storage/DbFile.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/java/mydb/storage/DbFileIterator.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/storage/Field.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/storage/IntField.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/storage/PageId.java" charset="UTF-8" />
