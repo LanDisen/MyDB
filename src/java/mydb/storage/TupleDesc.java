@@ -197,12 +197,12 @@ public class TupleDesc {
      */
     @Override
     public String toString() {
-        String str = "";
+        StringBuilder str = new StringBuilder();
         int len = this.tupleDescItems.size();
         for (int i=0; i<len; i++) {
             TupleDescItem item = this.tupleDescItems.get(i);
-            str += item.fieldType + "[" + i + "]" + item.fieldName + "[" + i + "]";
+            str.append(item.fieldType).append("[").append(i).append("]").append(item.fieldName).append("[").append(i).append("]");
         }
-        return str;
+        return str.toString();
     }
 }

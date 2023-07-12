@@ -14,28 +14,31 @@ public class Tuple implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    private TupleDesc tupleDesc;
+    private Field[] fields;
+    private RecordId recordId;
+
     /**
      * Tuple构造函数
      * @param td 该元组（tuple）的模式（schema）。TupleDesc应至少有一个字段（field）
      */
     public Tuple(TupleDesc td) {
-        // TODO
+        this.tupleDesc = td;
+        this.fields = new Field[td.getFieldsNum()];
     }
 
     /**
      * @return 返回该元组（tuple）的TupleDesc模式（schema）
      */
     public TupleDesc getTupleDesc() {
-        // TODO
-        return null;
+        return tupleDesc;
     }
 
     /**
      * @return 返回该元组在磁盘中的对应RecordId（可能为null）
      */
     public RecordId getRecordId() {
-        // TODO
-        return null;
+        return recordId;
     }
 
     /**
@@ -43,7 +46,7 @@ public class Tuple implements Serializable {
      * @param recordId 该元组（tuple）的新RecordId
      */
     public void setRecordId(RecordId recordId) {
-        // TODO
+        this.recordId = recordId;
     }
 
     /**
@@ -51,8 +54,7 @@ public class Tuple implements Serializable {
      * @return 返回第index个字段（field）的值
      */
     public Field getField(int index) {
-        // TODO
-        return null;
+        return fields[index];
     }
 
     /**
@@ -61,7 +63,7 @@ public class Tuple implements Serializable {
      * @param field 字段（field）的新值
      */
     public void setField(int index, Field field) {
-        // TODO
+        this.fields[index] = field;
     }
 
     /**
@@ -70,23 +72,29 @@ public class Tuple implements Serializable {
      */
     @Override
     public String toString() {
-        // TODO
-        throw new UnsupportedOperationException("Implement this");
+        StringBuilder str = new StringBuilder();
+        int n = fields.length;
+        for (int i=0; i<n; i++) {
+            str.append(fields[i]);
+            if (i < n - 1)
+                str.append('\t');
+        }
+        return str.toString();
     }
 
     /**
      * @return 该元组的字段集合的迭代器（Iterator）
      */
     public Iterator<Field> fields() {
-        // TODO
-        return null;
+        return Arrays.asList(this.fields).iterator();
     }
 
     /**
      * 重新设置该元组的TupleDesc
      */
     public void resetTupleDesc(TupleDesc td) {
-        // TODO
+        this.tupleDesc = td;
+        //this.fields = new Field[td.getFieldsNum()];
     }
 
 }
