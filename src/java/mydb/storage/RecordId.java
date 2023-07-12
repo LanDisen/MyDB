@@ -3,13 +3,17 @@ package java.mydb.storage;
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * RecordId用于映射一个表的特定页面（Page）中特定元组（Tuple）
+ * 一个RecordId可能会映射到多个元组
+ */
 public class RecordId implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * PageId构造函数
+     * RecordId构造函数
      * @param pid page id
      * @param tupleNo page中元组号（tuple number）
      */

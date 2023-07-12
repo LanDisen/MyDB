@@ -11,4 +11,16 @@ import java.io.*;
  */
 public interface DbFile {
 
+    /**
+     * @return 返回DbFIle在Catalog中唯一的ID
+     */
+    int getId();
+
+    /**
+     * @return 返回该DbFile的TupleDesc
+     */
+    TupleDesc getTupleDesc();
+
+    //DbFileIterator iterator(TransactionId tid);
+
 }
