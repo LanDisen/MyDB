@@ -15,7 +15,7 @@ public class PageLock {
     public static final int SHARE = 0;
 
     // ÅÅËûËø
-    public static final int EXCLUSIVE = 0;
+    public static final int EXCLUSIVE = 1;
 
     // ÊÂÎñID
     private TransactionId transactionId;
