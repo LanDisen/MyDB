@@ -3,6 +3,7 @@ package java.mydb.common;
 import java.mydb.common.Type;
 import java.mydb.storage.DbFile;
 import java.mydb.storage.TupleDesc;
+import java.mydb.storage.Table;
 
 import java.mydb.storage.DbFile;
 
@@ -18,20 +19,17 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Catalog {
 
-    /**
-     * Table类
-     */
-    public class Table {
-        private DbFile dbFile;
-        private String name;
-        private String primaryKeyName;
-
-        public Table(DbFile dbFile, String name, String primaryKeyName) {
-            this.dbFile = dbFile;
-            this.name = name;
-            this.primaryKeyName = primaryKeyName;
-        }
-    }
+//    public class Table {
+//        private DbFile dbFile;
+//        private String name;
+//        private String primaryKeyName;
+//
+//        public Table(DbFile dbFile, String name, String primaryKeyName) {
+//            this.dbFile = dbFile;
+//            this.name = name;
+//            this.primaryKeyName = primaryKeyName;
+//        }
+//    }
 
     /**
      * 通过DbFile的getId()作为key获得对应的Table
@@ -89,7 +87,7 @@ public class Catalog {
      */
     public TupleDesc getTupleDesc(int tableId) throws NoSuchElementException {
         if (tables.containsKey(tableId))
-            return tables.get(tableId).dbFile.getTupleDesc();
+            return tables.get(tableId).getDbFile().getTupleDesc();
         throw new NoSuchElementException("Table " + tableId + " is not found");
     }
 
@@ -98,7 +96,7 @@ public class Catalog {
      */
     public DbFile getDbFile(int tableId) throws NoSuchElementException {
         if (tables.containsKey(tableId))
-            return tables.get(tableId).dbFile;
+            return tables.get(tableId).getDbFile();
         throw new NoSuchElementException("Table " + tableId + " is not found");
     }
 
@@ -111,7 +109,7 @@ public class Catalog {
         Table table = tables.get(tableId);
         if (table == null)
             throw new NoSuchElementException("Table " + tableId + " is not found");
-        return table.primaryKeyName;
+        return table.getPrimaryKeyName();
     }
 
     public Iterator<Integer> tableIdIterator() {
@@ -121,7 +119,7 @@ public class Catalog {
     public String getTableName(int tableId) throws NoSuchElementException {
         if (tables.get(tableId) == null)
             throw new NoSuchElementException("Table " + tableId + " is not found");
-        return tables.get(tableId).name;
+        return tables.get(tableId).getName();
     }
 
     /**
