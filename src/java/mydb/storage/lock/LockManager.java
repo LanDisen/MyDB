@@ -29,8 +29,6 @@ public class LockManager {
      */
     public synchronized boolean lock(PageId pid, TransactionId tid, int lockType)
             throws InterruptedException{
-        final String lockTypeStr = (lockType == 0 ? "read lock": "write lock");
-        final String threadName = Thread.currentThread().getName();
         // 获得pid页面存在的事务以及对应的锁
         Map<TransactionId, PageLock> locks = pageLocks.get(pid);
         // 若该页面没有任何锁，则tid事务能够成功请求锁
@@ -39,8 +37,6 @@ public class LockManager {
             locks = new ConcurrentHashMap<>();
             locks.put(tid, pageLock);
             pageLocks.put(pid, locks);
-            System.out.println(threadName + ": page " + pid + " have no lock, " +
-                    "transaction " + tid + " set " + lockTypeStr + " successfully");
             return true;
         }
         PageLock pageLock = locks.get(tid);
@@ -48,27 +44,18 @@ public class LockManager {
         if (pageLock != null) {
             // 尝试请求读锁
             if (lockType == PageLock.SHARE) {
-                System.out.println(threadName + ": page " + pid +
-                        " have read lock with the same transaction " + tid +
-                        "set " + lockTypeStr + " successfully");
                 return true;
             }
             // 尝试请求写锁
             if (lockType == PageLock.EXCLUSIVE) {
                 if (locks.size() > 1) {
                     // 该页面具有数量大于1的锁（显然是读锁），请求写锁失败
-                    System.out.println(threadName + ": page " + pid +
-                            " have many read locks, transaction " + tid +
-                            " failed to set " + lockTypeStr);
                     // TODO 抛出事务异常
                     return false;
                 }
                 if (locks.size() == 1) {
                     if (pageLock.getType() == PageLock.EXCLUSIVE) {
                         // 该事务在该页面上已有一个写锁，请求成功
-                        System.out.println(threadName + ": page " + pid +
-                                " have write lock with the same transaction " + tid +
-                                " set " + lockTypeStr + " successfully");
                         return true;
                     }
                     if (pageLock.getType() == PageLock.SHARE) {
@@ -76,9 +63,6 @@ public class LockManager {
                         pageLock.setType(PageLock.EXCLUSIVE);
                         locks.put(tid, pageLock);
                         pageLocks.put(pid, locks);
-                        System.out.println(threadName + ": page " + pid +
-                                " have one read lock with the same transaction " + tid +
-                                " set " + lockTypeStr + "successfully");
                         return true;
                     }
                 }
@@ -91,9 +75,6 @@ public class LockManager {
                     pageLock = new PageLock(lockType, tid);
                     locks.put(tid, pageLock);
                     pageLocks.put(pid, locks);
-                    System.out.println(threadName + ": page " + pid +
-                            " have no locks, transaction " + tid +
-                            " set " + lockTypeStr + " successfully");
                     return true;
                 }
                 PageLock tmpLock = null;
@@ -106,9 +87,6 @@ public class LockManager {
                         pageLock = new PageLock(lockType, tid);
                         locks.put(tid, pageLock);
                         pageLocks.put(pid, locks);
-                        System.out.println(threadName + ": page " + pid +
-                                " have no locks, transaction " + tid +
-                                " set " + lockTypeStr + " successfully");
                         return true;
                     }
                     if (tmpLock.getType() == PageLock.EXCLUSIVE) {
@@ -136,21 +114,51 @@ public class LockManager {
        return false;
     }
 
-    // 对应事务在对应页面上释放锁
+
+    /**
+     * 对应事务在对应页面上释放锁
+     * @param pid 页面ID
+     * @param tid 事务ID
+     */
     public synchronized void unlock(PageId pid, TransactionId tid) {
-        // TODO 待实现
+        Map<TransactionId, PageLock> locks = pageLocks.get(pid);
+        if (locks == null || tid == null) {
+            // 该页面无锁，或者未指定tid，直接返回
+            return;
+        }
+        PageLock lock = locks.get(tid);
+        if (lock == null) {
+            // 该事务在该页面上没有锁，直接返回
+            return;
+        }
+        locks.remove(tid); // 该事务释放锁
+        if (locks.size() == 0) {
+            // 该页面没有任何锁
+            pageLocks.remove(pid);
+        }
+        this.notifyAll(); // 唤醒所有线程
     }
 
-    // 判断事务在该页面上是否持有锁
+    /**
+     * 判断事务在该页面上是否持有锁
+     * @param pid 页面ID
+     * @param tid 事务ID
+     */
     public synchronized boolean hasLock(PageId pid, TransactionId tid) {
-        // TODO 待实现
-        return false;
+        Map<TransactionId, PageLock> locks = pageLocks.get(pid);
+        if (locks == null) {
+            return false;
+        }
+        return (locks.get(tid) != null);
     }
 
-    // 事务结束，释放该事务在所有页面上持有的锁
-    public synchronized void unlockAll() {
-        // TODO 待实现
-
+    /**
+     * 事务结束，释放该事务在所有页面上持有的锁
+     */
+    public synchronized void unlockAll(TransactionId tid) {
+        Set<PageId> pageIdSet = pageLocks.keySet();
+        for (PageId pid: pageIdSet) {
+            unlock(pid, tid);
+        }
     }
-
 }
