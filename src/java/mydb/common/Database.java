@@ -1,6 +1,7 @@
 package java.mydb.common;
 
 import java.io.*;
+import java.mydb.storage.BufferPool;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -12,5 +13,21 @@ public class Database {
     private static final AtomicReference<Database> instance =
             new AtomicReference<>(new Database());
 
-    //private final Catalog catalog;
+    private final Catalog catalog;
+
+    private final BufferPool bufferPool;
+
+    private Database() {
+        catalog = new Catalog();
+        bufferPool = new BufferPool(BufferPool.DEFAULT_PAGES_NUM);
+    }
+
+    public static Catalog getCatalog() {
+        return instance.get().catalog;
+    }
+
+    public static BufferPool getBufferPool() {
+        return instance.get().bufferPool;
+    }
+
 }
