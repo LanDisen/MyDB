@@ -12,6 +12,17 @@ import java.io.*;
 public interface DbFile {
 
     /**
+     * 从磁盘中读取对应页面
+     */
+    Page readPage(PageId pid);
+
+    /**
+     * 将指定页面写入磁盘
+     */
+    void writePage(PageId pid) throws IOException;
+    // void writePage(Page page) throws IOException;
+
+    /**
      * @return 返回DbFIle在Catalog中唯一的ID
      */
     int getId();
