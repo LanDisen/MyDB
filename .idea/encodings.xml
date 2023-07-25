@@ -6,20 +6,28 @@
     <file url="file://$PROJECT_DIR$/src/java/mydb/Parser.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/common/Catalog.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/common/Database.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/java/mydb/common/DbException.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/java/mydb/common/Permissions.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/common/Type.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/common/Util.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/execution/OpIterator.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/execution/Operator.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/execution/Predicate.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/java/mydb/storage/BufferPool.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/storage/DbFile.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/storage/DbFileIterator.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/storage/Field.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/storage/IntField.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/java/mydb/storage/Page.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/storage/PageId.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/storage/RecordId.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/storage/StringField.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/storage/Tuple.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/storage/TupleDesc.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/java/mydb/storage/TupleIterator.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/java/mydb/storage/evict/EvictStrategy.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/java/mydb/storage/evict/LRU.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/java/mydb/transaction/Transaction.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/java/mydb/transaction/TransactionId.java" charset="UTF-8" />
   </component>
 </project>
