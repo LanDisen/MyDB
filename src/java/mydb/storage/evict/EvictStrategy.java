@@ -3,13 +3,18 @@ package java.mydb.storage.evict;
 import java.mydb.storage.PageId;
 
 /**
- * �����������Խӿ�
+ * 缓冲池驱逐策略接口
  */
 public interface EvictStrategy {
 
     /**
-     *
-     * @return
+     * 修改指定页面的数据后需要进行的策略
+     * @param pid 进行修改的页面ID
+     */
+    void modifyData(PageId pid);
+
+    /**
+     * 获取将要驱逐的页面Id
      */
     PageId getEvictPageId();
 }
