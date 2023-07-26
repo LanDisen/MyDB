@@ -3,7 +3,7 @@ package java.mydb.storage;
 import java.util.Objects;
 
 /**
- * HeapPageÎ¨Ò»µÄID
+ * HeapPageå”¯ä¸€çš„ID
  */
 public class HeapPageId implements PageId {
 
@@ -11,9 +11,9 @@ public class HeapPageId implements PageId {
     private final int pageNumber;
 
     /**
-     * HeapPageId¹¹Ôìº¯Êı£¬´´½¨Ò»¸öPageIdÒÔÈ·¶¨ÌØ¶¨µÄÒ³ÃæºÍ±í
-     * @param tableId ËùÒıÓÃµÄ±íµÄID
-     * @param pageNumber ¸Ã±íµÄÒ³ÃæÊıÁ¿
+     * HeapPageIdæ„é€ å‡½æ•°ï¼Œåˆ›å»ºä¸€ä¸ªPageIdä»¥ç¡®å®šç‰¹å®šçš„é¡µé¢å’Œè¡¨
+     * @param tableId æ‰€å¼•ç”¨çš„è¡¨çš„ID
+     * @param pageNumber è¯¥è¡¨çš„é¡µé¢æ•°é‡
      */
     public HeapPageId(int tableId, int pageNumber) {
         this.tableId = tableId;
@@ -26,7 +26,7 @@ public class HeapPageId implements PageId {
     }
 
     /**
-     * @return ·µ»Ø¶ÔÓ¦±í¹ØÁªµÄÒ³ÃæÊıÁ¿
+     * @return è¿”å›å¯¹åº”è¡¨å…³è”çš„é¡µé¢æ•°é‡
      */
     @Override
     public int getPageNumber() {
