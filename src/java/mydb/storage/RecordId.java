@@ -2,6 +2,7 @@ package java.mydb.storage;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * RecordId用于映射一个表的特定页面（Page）中特定元组（Tuple）
@@ -13,28 +14,37 @@ public class RecordId implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 该记录（record）所在页面的ID
+     */
+    private final PageId pid;
+
+    /**
+     * 元组号（tuple number）
+     */
+    private final int tupleNo;
+
+    /**
      * RecordId构造函数
      * @param pid page id
      * @param tupleNo page中元组号（tuple number）
      */
     public RecordId(PageId pid, int tupleNo) {
-        // TODO
+        this.pid = pid;
+        this.tupleNo = tupleNo;
     }
 
     /**
-     * @return 该RecordId引用的元组数（tuple number）
+     * @return 该RecordId引用的元组号（tuple number）
      */
-    public int getTupleNum() {
-        // TODO
-        return 0;
+    public int getTupleNo() {
+        return tupleNo;
     }
 
     /**
      * @return 返回对应的pageId
      */
     public PageId getPageId() {
-        // TODO
-        return null;
+        return pid;
     }
 
     /**
@@ -43,8 +53,14 @@ public class RecordId implements Serializable {
      */
     @Override
     public boolean equals(Object obj) {
-        // TODO
-        throw new UnsupportedOperationException("unimplemented");
+        if (!(obj instanceof RecordId)) {
+            return false;
+        }
+        RecordId recordId = (RecordId) obj;
+        if (pid.equals(recordId.getPageId()) && tupleNo == recordId.getTupleNo()) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -52,7 +68,6 @@ public class RecordId implements Serializable {
      */
     @Override
     public int hashCode() {
-        // TODO
-        throw new UnsupportedOperationException("unimplemented");
+        return Objects.hash(pid, tupleNo);
     }
 }
