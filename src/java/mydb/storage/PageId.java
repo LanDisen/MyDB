@@ -13,6 +13,9 @@ public interface PageId {
      */
     int getTableId();
 
+    /**
+     * @return 返回页面对应表所引用的页面数量
+     */
     int getPageNumber();
 
     /**
