@@ -1,11 +1,11 @@
 package java.mydb.storage;
 
-import java.io.*;
 import java.mydb.common.Database;
 import java.mydb.common.DbException;
 import java.mydb.transaction.TransactionId;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+
+import java.io.*;
+import java.util.*;
 
 
 /**
@@ -16,9 +16,22 @@ import java.util.NoSuchElementException;
 public class HeapPage implements Page {
 
     final HeapPageId pid;
+
     final TupleDesc tupleDesc;
+
+    /**
+     * HeapPage的header本质是一个位图（bitmap），用于标记哪些槽（slot）为空或已使用
+     */
     final byte[] header;
+
+    /**
+     * 存放在该页面的元组
+     */
     final Tuple[] tuples;
+
+    /**
+     * 槽的数量
+     */
     final int slotsNum;
 
     byte[] oldData;

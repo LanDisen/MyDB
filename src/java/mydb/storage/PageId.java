@@ -14,9 +14,9 @@ public interface PageId {
     int getTableId();
 
     /**
-     * @return 返回页面对应表所引用的页面数量
+     * @return 返回页面对应表所引用的页面索引位置
      */
-    int getPageNumber();
+    int getPageIndex();
 
     /**
      * @return 该Page的哈希值

@@ -8,16 +8,16 @@ import java.util.Objects;
 public class HeapPageId implements PageId {
 
     private final int tableId;
-    private final int pageNumber;
+    private final int pageIndex;
 
     /**
      * HeapPageId构造函数，创建一个PageId以确定特定的页面和表
      * @param tableId 所引用的表的ID
-     * @param pageNumber 该表的页面数量
+     * @param pageIndex 该表的页面数量
      */
-    public HeapPageId(int tableId, int pageNumber) {
+    public HeapPageId(int tableId, int pageIndex) {
         this.tableId = tableId;
-        this.pageNumber = pageNumber;
+        this.pageIndex= pageIndex;
     }
 
     @Override
@@ -29,13 +29,13 @@ public class HeapPageId implements PageId {
      * @return 返回对应表关联的页面数量
      */
     @Override
-    public int getPageNumber() {
-        return pageNumber;
+    public int getPageIndex() {
+        return pageIndex;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(tableId, pageNumber);
+        return Objects.hash(tableId, pageIndex);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class HeapPageId implements PageId {
             return false;
         }
         PageId pid = (PageId) o;
-        if (tableId == pid.getTableId() && pageNumber == pid.getPageNumber()) {
+        if (tableId == pid.getTableId() && pageIndex == pid.getPageIndex()) {
             return true;
         }
         return false;
