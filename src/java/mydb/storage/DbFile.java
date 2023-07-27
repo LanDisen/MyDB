@@ -2,6 +2,7 @@ package java.mydb.storage;
 
 import java.mydb.common.Catalog;
 
+import java.mydb.transaction.TransactionId;
 import java.util.*;
 import java.io.*;
 
@@ -32,6 +33,6 @@ public interface DbFile {
      */
     TupleDesc getTupleDesc();
 
-    //DbFileIterator iterator(TransactionId tid);
+    DbFileIterator iterator(TransactionId tid);
 
 }

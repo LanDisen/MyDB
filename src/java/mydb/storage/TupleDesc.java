@@ -35,6 +35,14 @@ public class TupleDesc {
 
     private List<TupleDescItem> tupleDescItems;
 
+    public List<TupleDescItem> getTupleDescItems() {
+        return tupleDescItems;
+    }
+
+    public void setTupleDescItems(List<TupleDescItem> items) {
+        this.tupleDescItems = items;
+    }
+
     /**
      * @return 返回该TupleDesc对象所有字段TupleDescItems的迭代器
      */
@@ -57,6 +65,8 @@ public class TupleDesc {
             tupleDescItems.add(item);
         }
     }
+
+    public TupleDesc() {}
 
     /**
      * TupleDesc构造函数
