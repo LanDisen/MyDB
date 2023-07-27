@@ -2,6 +2,7 @@ package java.mydb.storage;
 
 import java.mydb.common.Database;
 import java.mydb.common.DbException;
+import java.mydb.common.Permissions;
 import java.mydb.transaction.TransactionId;
 
 import java.io.*;
@@ -112,6 +113,70 @@ public class HeapFile implements DbFile {
 
 
     public DbFileIterator iterator(TransactionId tid) {
-        //return new HeapFileIterator(this, tid);
+        return new HeapFileIterator(this, tid);
+    }
+
+    /**
+     * HeapFileIterator为HeapFile的内部静态类
+     */
+    public static class HeapFileIterator implements DbFileIterator {
+
+        private final HeapFile heapFile;
+        private final TransactionId tid;
+        private Iterator<Tuple> tupleIterator;
+        private int pageIndex;
+
+        public HeapFileIterator(HeapFile heapFile, TransactionId tid) {
+            this.heapFile = heapFile;
+            this.tid = tid;
+        }
+
+        private Iterator<Tuple> getPageTuples(int pageIndex) throws DbException {
+            if (pageIndex < 0 || pageIndex >= heapFile.getPagesNum()) {
+                String errorMsg = String.format("page %d do not exists in heap file %d", pageIndex, heapFile.getId());
+                throw new DbException(errorMsg);
+            }
+            HeapPageId pid = new HeapPageId(heapFile.getId(), pageIndex);
+            HeapPage page = (HeapPage) Database.getBufferPool().getPage(tid, pid, Permissions.READ_ONLY);
+            return page.iterator();
+        }
+
+        @Override
+        public void open() throws DbException {
+            this.tupleIterator = getPageTuples(pageIndex);
+            this.pageIndex = 0;
+        }
+
+        @Override
+        public void close() throws DbException  {
+            tupleIterator = null;
+        }
+
+        @Override
+        public boolean hasNext() throws DbException  {
+            if (tupleIterator == null) {
+                return false;
+            }
+            while (tupleIterator != null && !tupleIterator.hasNext()) {
+                if (pageIndex < heapFile.getPagesNum() - 1) {
+                    pageIndex++;
+                    tupleIterator = getPageTuples(pageIndex);
+                } else {
+                    tupleIterator = null;
+                }
+            }
+            if (tupleIterator == null) {
+                return false;
+            }
+            return tupleIterator.hasNext();
+        }
+
+        @Override
+        public Tuple next() throws DbException ,NoSuchElementException {
+            if (tupleIterator == null || !tupleIterator.hasNext()) {
+                throw new NoSuchElementException();
+            }
+            return tupleIterator.next();
+        }
     }
 }
