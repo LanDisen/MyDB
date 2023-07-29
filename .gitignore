@@ -1,2 +1,6 @@
+.idea
 doc/
-src/mydb/data/
+out/
+res/
+*.class
+*.log
