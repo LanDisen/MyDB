@@ -123,7 +123,7 @@ public class HeapFile implements DbFile {
 
         private final HeapFile heapFile;
         private final TransactionId tid;
-        private Iterator<Tuple> tupleIterator;
+        private Iterator<Tuple> iterator;
         private int pageIndex;
 
         public HeapFileIterator(HeapFile heapFile, TransactionId tid) {
@@ -144,39 +144,45 @@ public class HeapFile implements DbFile {
         @Override
         public void open() throws DbException {
             this.pageIndex = 0;
-            this.tupleIterator = getPageTuples(pageIndex);
+            this.iterator = getPageTuples(pageIndex);
         }
 
         @Override
         public void close() throws DbException  {
-            tupleIterator = null;
+            iterator = null;
         }
 
         @Override
         public boolean hasNext() throws DbException  {
-            if (tupleIterator == null) {
+            if (iterator == null) {
                 return false;
             }
-            while (tupleIterator != null && !tupleIterator.hasNext()) {
+            while (iterator != null && !iterator.hasNext()) {
                 if (pageIndex < heapFile.getPagesNum() - 1) {
                     pageIndex++;
-                    tupleIterator = getPageTuples(pageIndex);
+                    iterator = getPageTuples(pageIndex);
                 } else {
-                    tupleIterator = null;
+                    iterator = null;
                 }
             }
-            if (tupleIterator == null) {
+            if (iterator == null) {
                 return false;
             }
-            return tupleIterator.hasNext();
+            return iterator.hasNext();
         }
 
         @Override
         public Tuple next() throws DbException ,NoSuchElementException {
-            if (tupleIterator == null || !tupleIterator.hasNext()) {
+            if (iterator == null || !iterator.hasNext()) {
                 throw new NoSuchElementException();
             }
-            return tupleIterator.next();
+            return iterator.next();
+        }
+
+        @Override
+        public void rewind() throws DbException {
+            close();
+            open();
         }
     }
 }
