@@ -20,7 +20,7 @@ public interface OpIterator extends Serializable {
     /**
      * 关闭迭代器
      */
-    void close() throws DbException;
+    void close();
 
     /**
      * 判断迭代器是否还有下一个元组（Tuple）
