@@ -8,12 +8,16 @@ import java.io.Serializable;
 
 /**
  * Predicate（谓词）类用于比较tuple和具体的字段（field）
+ * 谓词的返回值都是true，如：NOT NULL、EXISTS、IN等都是谓词
  */
 public class Predicate implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 枚举类，用于返回Field.compare常数值
+     */
     public enum Op implements Serializable {
         EQUALS,
         NOT_EQUALS,
@@ -49,44 +53,60 @@ public class Predicate implements Serializable {
         }
     }
 
+    private final int fieldIndex;
+
+    private final Op op;
+
     /**
-     * Predicate构造函数
-     * @param field 要进行比较的字段号（field number）
+     * 操作数
+     */
+    private final Field operand;
+
+    /**
+     * Predicate谓词构造函数
+     * @param fieldIndex 要进行比较的字段索引号（field number）
      * @param op 比较操作符
      * @param operand 具体字段（field）的值
      */
-    public Predicate(int field, Op op, Field operand) {
-        // code
+    public Predicate(int fieldIndex, Op op, Field operand) {
+        this.fieldIndex = fieldIndex;
+        this.op = op;
+        this.operand = operand;
     }
 
-    public int getField() {
-        // code
-        return -1;
+    public int getFieldIndex() {
+        return fieldIndex;
     }
 
+    /**
+     * @return 返回操作符
+     */
     public Op getOp() {
-        // code
-        return null;
+        return op;
     }
 
+    /**
+     * @return 返回操作数
+     */
     public Field getOperand() {
-        // code
-        return null;
+        return operand;
     }
 
     /**
      * 将构造函数中指定的字段号和指定的操作数进行比较
-     * @param t 要进行比较的元组tuple
-     * @return 如果比较是true则返回true，否则返回false
+     * @param tuple 要进行比较的元组tuple
+     * @return 如果比较结果是true则返回true，否则返回false
      */
-    public boolean filter(Tuple t) {
-        // code
-        return false;
+    public boolean filter(Tuple tuple) {
+        if (tuple == null) {
+            return false;
+        }
+        Field field = tuple.getField(this.fieldIndex);
+        return field.compare(this.op, this.operand);
     }
 
     @Override
     public String toString() {
-        // code
-        return "";
+        return "fieldIndex:" + fieldIndex + " op:" + op.toString() + " operand:" + operand.toString();
     }
 }
