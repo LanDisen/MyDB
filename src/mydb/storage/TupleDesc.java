@@ -28,7 +28,7 @@ public class TupleDesc {
 
         @Override
         public String toString() {
-            return fieldName + "(" + fieldName + ")";
+            return fieldName + "(" + fieldType + ")";
         }
 
     }

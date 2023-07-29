@@ -61,10 +61,10 @@ public class BufferPool {
      * @param pagesNum 该缓冲池可以缓存的最大页面数量
      */
     public BufferPool(int pagesNum) {
-        // TODO
         this.pagesNum = pagesNum;
         this.cache = new ConcurrentHashMap<>();
         this.evictStrategy = new LRU(pagesNum);
+        this.lockManager = new LockManager();
     }
 
     public static int getPageSize() {

@@ -143,8 +143,8 @@ public class HeapFile implements DbFile {
 
         @Override
         public void open() throws DbException {
-            this.tupleIterator = getPageTuples(pageIndex);
             this.pageIndex = 0;
+            this.tupleIterator = getPageTuples(pageIndex);
         }
 
         @Override

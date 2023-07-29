@@ -64,7 +64,7 @@ public class HeapFileEncoder {
      * @param pageBytesNum 输出文件中每个页面的字节数
      * @param fieldsNum 文件中每一行的元组的字段数量
      * @param types 字段类型数组
-     * @param fieldSeparator 文件中用于分隔属性的符号，如都好
+     * @param fieldSeparator 文件中用于分隔属性的符号，如逗号
      * @throws IOException 输入或输出文件未打开（open）会抛出一次
      */
     public static void convert(File inFile, File outFile, int pageBytesNum,
