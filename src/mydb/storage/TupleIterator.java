@@ -1,6 +1,8 @@
 package mydb.storage;
 
 import java.io.Serial;
+
+import mydb.common.DbException;
 import mydb.execution.OpIterator;
 
 import java.util.*;
@@ -60,4 +62,10 @@ public class TupleIterator implements OpIterator {
         return tupleDesc;
     }
 
+    @Override
+    public void rewind() throws DbException {
+        // 先close在open以初始化迭代器
+        close();
+        open();
+    }
 }

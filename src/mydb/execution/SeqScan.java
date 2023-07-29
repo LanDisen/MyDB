@@ -42,7 +42,7 @@ public class SeqScan implements OpIterator {
         this.tableId = tableId;
         this.tableAlias = tableAlias;
         this.catalog = Database.getCatalog();
-        this.tupleDesc = getAliasTupleDesc(tupleDesc, tableAlias);
+        this.tupleDesc = getAliasTupleDesc(catalog.getTupleDesc(tableId), tableAlias);
         this.tableName = catalog.getTableName(tableId);
         this.dbFile = catalog.getDbFile(tableId);
     }
@@ -99,7 +99,7 @@ public class SeqScan implements OpIterator {
     }
 
     @Override
-    public void close() throws DbException  {
+    public void close() {
         iterator = null;
     }
 
@@ -121,6 +121,11 @@ public class SeqScan implements OpIterator {
             throw new NoSuchElementException("No next tuple");
         }
         return tuple;
+    }
+
+    @Override
+    public void rewind() throws DbException {
+        iterator.rewind();
     }
 
     @Override

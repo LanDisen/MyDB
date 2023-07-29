@@ -34,6 +34,11 @@ public interface OpIterator extends Serializable {
     Tuple next() throws DbException, NoSuchElementException;
 
     /**
+     * 重新将迭代指针设为起始位置，重新进行迭代
+     */
+    void rewind() throws DbException;
+
+    /**
      * @return 返回迭代器对应元组的TupleDesc
      */
     TupleDesc getTupleDesc();

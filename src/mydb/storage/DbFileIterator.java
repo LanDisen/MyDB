@@ -24,4 +24,10 @@ public interface DbFileIterator {
      */
     Tuple next() throws DbException, NoSuchElementException;
 
+    /**
+     * 设置迭代器指针为起始位置，可以重新进行迭代
+     * @throws DbException 如果不支持rewind会抛出异常
+     */
+    void rewind() throws DbException;
+
 }
