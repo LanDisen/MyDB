@@ -1,6 +1,7 @@
 package mydb.execution;
 
 import mydb.storage.Tuple;
+import mydb.storage.TupleDesc;
 import mydb.storage.TupleIterator;
 
 import java.io.Serializable;
@@ -55,5 +56,7 @@ public interface Aggregator {
      * 获得一个迭代器用于遍历分组聚合的结果
      */
     OpIterator iterator();
+
+    TupleDesc getTupleDesc();
     
 }
