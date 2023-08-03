@@ -23,8 +23,11 @@ public class IntField implements Field {
         return Type.INT_TYPE;
     }
 
-    public IntField(int i) {
-        value = i;
+    /**
+     * @param value 该字段存放的具体的值（属性）
+     */
+    public IntField(int value) {
+        this.value = value;
     }
 
     @Override
