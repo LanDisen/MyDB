@@ -11,8 +11,6 @@ import java.io.Serializable;
  */
 public interface Aggregator {
 
-    int hasGrouper = -1;
-
     enum Op implements Serializable {
         MIN, MAX, SUM, AVG, COUNT;
 
