@@ -157,7 +157,7 @@ public class HeapFileEncoder {
                         headerByte = 0;
                     }
                 }
-                if (i % 8 == 0) {
+                if (i % 8 > 0) {
                     headerDOS.writeByte(headerByte);
                 }
                 // 用0填补页面剩下的内容
