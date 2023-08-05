@@ -21,12 +21,12 @@ public class Delete extends Operator {
     private final TransactionId tid;
     private OpIterator child;
     private final TupleDesc tupleDesc;
-    private Tuple deletedTuple; // ½øĞĞÉ¾³ı²Ù×÷µÄÔª×é
+    private Tuple deletedTuple; // è¿›è¡Œåˆ é™¤æ“ä½œçš„å…ƒç»„
 
     /**
-     * Delete¹¹Ôìº¯Êı
-     * @param tid ÊÂÎñID
-     * @param child ÓÃÓÚ¶ÁÈ¡ĞèÒªÉ¾³ıµÄÔª×éµÄOpIterator
+     * Deleteæ„é€ å‡½æ•°
+     * @param tid äº‹åŠ¡ID
+     * @param child ç”¨äºè¯»å–éœ€è¦åˆ é™¤çš„å…ƒç»„çš„OpIterator
      */
     public Delete(TransactionId tid, OpIterator child)
             throws DbException {
@@ -53,14 +53,14 @@ public class Delete extends Operator {
     }
 
     /**
-     * ´ÓchildÖĞ»ñµÃÏÂÒ»¸öĞèÒªÉ¾³ıµÄÔª×é
-     * @return ·µ»Øµ¥Ò»×Ö¶ÎÔª×é£¬Æä°üÀ¨ÒÑÉ¾³ıµÄ¼ÇÂ¼ÊıÁ¿
+     * ä»childä¸­è·å¾—ä¸‹ä¸€ä¸ªéœ€è¦åˆ é™¤çš„å…ƒç»„
+     * @return è¿”å›å•ä¸€å­—æ®µå…ƒç»„ï¼Œå…¶åŒ…æ‹¬å·²åˆ é™¤çš„è®°å½•æ•°é‡
      */
     @Override
     protected Tuple fetchNext() throws DbException, NoSuchElementException {
-        // ¸Ã·½·¨Ö»Ğèµ÷ÓÃÒ»´Î
+        // è¯¥æ–¹æ³•åªéœ€è°ƒç”¨ä¸€æ¬¡
         if (deletedTuple != null) {
-            // ¸Ã·½·¨ÒÑ±»ÖØ¸´µ÷ÓÃ
+            // è¯¥æ–¹æ³•å·²è¢«é‡å¤è°ƒç”¨
             return null;
         }
         BufferPool bufferPool = Database.getBufferPool();

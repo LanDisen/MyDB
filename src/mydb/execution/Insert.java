@@ -22,14 +22,14 @@ public class Insert extends Operator {
     private OpIterator child;
     private final int tableId;
     private final TupleDesc tupleDesc;
-    private Tuple insertedTuple; // ĞèÒª½øĞĞ²åÈë²Ù×÷µÄÔª×é
+    private Tuple insertedTuple; // éœ€è¦è¿›è¡Œæ’å…¥æ“ä½œçš„å…ƒç»„
 
     /**
-     * Insert¹¹Ôìº¯Êı
-     * @param tid ÊÂÎñID
-     * @param child ÓÃÓÚ±éÀúĞèÒª²åÈëµÄÔª×é£¨Tuple£©ÁĞ±íµÄOpIterator
-     * @param tableId Ôª×éËù²åÈëµÄ±íID
-     * @throws DbException ÈôchildµÄTupleDescÓëĞèÒª²åÈëµÄÔª×éµÄTupleDesc²»·ûºÏ»áÅ×³öÒì³£
+     * Insertæ„é€ å‡½æ•°
+     * @param tid äº‹åŠ¡ID
+     * @param child ç”¨äºéå†éœ€è¦æ’å…¥çš„å…ƒç»„ï¼ˆTupleï¼‰åˆ—è¡¨çš„OpIterator
+     * @param tableId å…ƒç»„æ‰€æ’å…¥çš„è¡¨ID
+     * @throws DbException è‹¥childçš„TupleDescä¸éœ€è¦æ’å…¥çš„å…ƒç»„çš„TupleDescä¸ç¬¦åˆä¼šæŠ›å‡ºå¼‚å¸¸
      */
     public Insert(TransactionId tid, OpIterator child, int tableId)
             throws DbException {
@@ -57,19 +57,19 @@ public class Insert extends Operator {
     }
 
     /**
-     * ´ÓchildÖĞµÃµ½ĞèÒª²åÈëµÄÔª×é£¬²åÈëµ½¹¹Ôìº¯ÊıÖ¸¶¨µÄ±íÖĞ¡£
-     * ²åÈëÔª×éÇ°ÎŞĞè¼ì²éÔª×éÊÇ·ñÖØ¸´
-     * @return ·µ»ØÒ»¸ö¾ßÓĞÒ»¸ö×Ö¶ÎµÄÔª×é£¬Æä°üº¬ÒÑ²åÈëµÄ¼ÇÂ¼ÊıÁ¿¡£Èô¸Ã·½·¨±»ÖØ¸´µ÷ÓÃÔò·µ»Ønull
+     * ä»childä¸­å¾—åˆ°éœ€è¦æ’å…¥çš„å…ƒç»„ï¼Œæ’å…¥åˆ°æ„é€ å‡½æ•°æŒ‡å®šçš„è¡¨ä¸­ã€‚
+     * æ’å…¥å…ƒç»„å‰æ— éœ€æ£€æŸ¥å…ƒç»„æ˜¯å¦é‡å¤
+     * @return è¿”å›ä¸€ä¸ªå…·æœ‰ä¸€ä¸ªå­—æ®µçš„å…ƒç»„ï¼Œå…¶åŒ…å«å·²æ’å…¥çš„è®°å½•æ•°é‡ã€‚è‹¥è¯¥æ–¹æ³•è¢«é‡å¤è°ƒç”¨åˆ™è¿”å›null
      */
     @Override
     protected Tuple fetchNext() throws DbException, NoSuchElementException {
-        // ¸Ã·½·¨Ö»Ğèµ÷ÓÃÒ»´Î
+        // è¯¥æ–¹æ³•åªéœ€è°ƒç”¨ä¸€æ¬¡
         if (insertedTuple != null) {
-            // ¸Ã·½·¨ÒÑ±»ÖØ¸´µ÷ÓÃ
+            // è¯¥æ–¹æ³•å·²è¢«é‡å¤è°ƒç”¨
             return null;
         }
         BufferPool bufferPool = Database.getBufferPool();
-        int insertedTuplesNum = 0; // ¼ÇÂ¼ÒÑ½øĞĞ²åÈë²Ù×÷µÄÔª×éÊıÁ¿
+        int insertedTuplesNum = 0; // è®°å½•å·²è¿›è¡Œæ’å…¥æ“ä½œçš„å…ƒç»„æ•°é‡
         while (child.hasNext()) {
             try {
                 bufferPool.insertTuple(tid, tableId, child.next());
