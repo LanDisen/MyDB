@@ -4,3 +4,4 @@ out/
 res/
 *.class
 *.log
+src/mydb/test/*
