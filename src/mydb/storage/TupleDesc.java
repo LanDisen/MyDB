@@ -154,8 +154,12 @@ public class TupleDesc {
      * @return 新TupleDesc对象
      */
     public static TupleDesc merge(TupleDesc td1, TupleDesc td2) {
-        td1.tupleDescItems.addAll(td2.tupleDescItems);
-        return td1;
+        List<TupleDescItem> items = new ArrayList<>();
+        items.addAll(td1.getTupleDescItems());
+        items.addAll(td2.getTupleDescItems());
+        TupleDesc td = new TupleDesc();
+        td.setTupleDescItems(items);
+        return td;
     }
 
     /**
