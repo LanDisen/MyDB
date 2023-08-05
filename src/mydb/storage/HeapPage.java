@@ -41,7 +41,14 @@ public class HeapPage implements Page {
     byte[] oldData;
     private final Byte oldDataLock = (byte) 0;
 
+    /**
+     * 用于标记该页面是否dirty
+     */
     boolean dirty;
+
+    /**
+     * 正在对该页面进行操作的事务ID
+     */
     TransactionId tid;
 
     public HeapPage(HeapPageId id, byte[] data) throws IOException {

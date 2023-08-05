@@ -101,17 +101,69 @@ public class HeapFile implements DbFile {
         return pagesNum;
     }
 
-    public List<Page> insertTuple(TransactionId tid, Tuple tuple) {
-        // TODO
-        return null;
+    /**
+     * 指定事务插入元组
+     * @param tid 进行插入操作的事务ID
+     * @param tuple 需要插入的元组
+     * @return 返回修改了的页面列表
+     */
+    @Override
+    public List<Page> insertTuple(TransactionId tid, Tuple tuple)
+            throws DbException, IOException {
+        List<Page> modifiedPages = new ArrayList<>(); // 由于插入了新的元组而将会被修改的页面列表
+        int pagesNum = getPagesNum();
+        for (int i=0; i<pagesNum; i++) {
+            HeapPage page = (HeapPage) bufferPool.getPage(
+                    tid, new HeapPageId(this.getId(), i), Permissions.READ_WRITE
+            );
+            // 页面没有空槽
+            if (page.getEmptySlotsNum() == 0) {
+                // 页面已满，该事务寻找下一个可以插入元组的页面
+                // 页面已满需要释放该事务在页面上的锁，允许其它事务获取该页面，避免死锁
+                bufferPool.releaseLock(tid, page.getId());
+                continue;
+            }
+            page.insertTuple(tuple);
+            modifiedPages.add(page);
+            return modifiedPages;
+        }
+        // 缓冲池中的页面都满了，需要创建新的页面并写入文件
+        BufferedOutputStream outputStream = new BufferedOutputStream(
+                new FileOutputStream(file, true));
+        byte[] emptyPageData = HeapPage.createEmptyPageData();
+        // 向文件末尾添加数据
+        outputStream.write(emptyPageData);
+        outputStream.close();
+        // 将创建的空页面数据加载到cache中
+        HeapPage page = (HeapPage) bufferPool.getPage(
+                tid,
+                new HeapPageId(this.getId(), getPagesNum() - 1),
+                Permissions.READ_WRITE);
+        page.insertTuple(tuple);
+        modifiedPages.add(page);
+        return modifiedPages;
     }
 
-    public List<Page> deleteTuple(TransactionId tid, Tuple tuple) {
-        // TODO
-        return null;
+    /**
+     * 指定事务删除元组
+     * @param tid 事务ID
+     * @param tuple 需要进行删除的元组
+     * @return 返回修改了的页面列表
+     */
+    @Override
+    public List<Page> deleteTuple(TransactionId tid, Tuple tuple)
+            throws DbException, IOException {
+        HeapPage page = (HeapPage) bufferPool.getPage(
+                tid,
+                tuple.getRecordId().getPageId(),
+                Permissions.READ_WRITE);
+        page.deleteTuple(tuple);
+        ArrayList<Page> modifiedPages = new ArrayList<>();
+        modifiedPages.add(page);
+        return modifiedPages;
     }
 
-
+    @Override
     public DbFileIterator iterator(TransactionId tid) {
         return new HeapFileIterator(this, tid);
     }
