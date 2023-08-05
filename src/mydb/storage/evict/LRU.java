@@ -95,7 +95,6 @@ public class LRU implements EvictStrategy {
      */
     @Override
     public void modifyData(PageId pid) {
-        // TODO
         if (pageNodeMap.containsKey(pid)) {
             PageNode pageNode = pageNodeMap.get(pid);
             moveToFirst(pageNode);
