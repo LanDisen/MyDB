@@ -122,6 +122,34 @@ public class BufferPool {
     }
 
     /**
+     * 指定事务释放在指定页面的锁
+     * @param tid 事务ID
+     * @param pid 页面ID
+     */
+    public void releaseLock(TransactionId tid, PageId pid) {
+        // TODO
+    }
+
+    /**
+     * 事务完成，释放该事务持有的全部锁
+     * @param tid 事务ID
+     */
+    public void transactionComplete(TransactionId tid) {
+        // TODO
+    }
+
+    /**
+     * 判断事务在指定页面上是否持有锁
+     * @param tid 事务ID
+     * @param pid 页面ID
+     * @return 如果指定事务在指定页面上持有锁则返回true，否则返回false
+     */
+    public boolean holdsLock(TransactionId tid, PageId pid) {
+        // TODO
+        return false;
+    }
+
+    /**
      * 更新缓冲池中需要进行更新的页面列表
      * @param pages 需要更新的页面列表
      * @param tid 对页面进行操作的事务ID
