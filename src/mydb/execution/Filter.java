@@ -42,6 +42,11 @@ public class Filter extends Operator {
         super.close();
     }
 
+    @Override
+    public void rewind() throws DbException {
+        this.child.rewind();
+    }
+
     /**
      * 可用于遍历子操作符的元组
      * @return 返回下一个元组，若没有下一个元组则返回null

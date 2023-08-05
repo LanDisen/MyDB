@@ -57,6 +57,11 @@ public class Project extends Operator {
         child.close();
     }
 
+    @Override
+    public void rewind() throws DbException {
+        this.child.rewind();
+    }
+
     /**
      * 遍历child操作符的每一个元组，然后进行投影（project）
      * @return 返回下一个元组，如果后面没有元组了则返回null
