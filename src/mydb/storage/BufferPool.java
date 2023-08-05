@@ -11,6 +11,7 @@ import mydb.storage.evict.EvictStrategy;
 import mydb.storage.evict.LRU;
 
 import java.io.*;
+import java.util.*;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -121,25 +122,126 @@ public class BufferPool {
     }
 
     /**
-     *
+     * 更新缓冲池中需要进行更新的页面列表
+     * @param pages 需要更新的页面列表
+     * @param tid 对页面进行操作的事务ID
+     */
+    private void updatePages(List<Page> pages, TransactionId tid) throws DbException {
+        for (Page page: pages) {
+            page.setDirty(true, tid);
+            if (cache.size() == pagesNum) {
+                // 缓冲池存放页面数量已满，驱逐页面
+                evictPage();
+            }
+            cache.put(page.getId(), page);
+        }
+    }
+
+    /**
+     * 指定事务在指定的表中插入一个新元组，需要将页面设置为dirty
+     * // TODO 后续需要请求写锁，如果指定页面已被上写锁则事务会被阻塞
      * @param tid 事务ID
      * @param tableId 表ID
      * @param tuple 需要插入的元组
      */
     public void insertTuple(TransactionId tid, int tableId, Tuple tuple)
         throws DbException, IOException {
-        // TODO
+        // 获取需要插入元组的表
+        DbFile dbFile = Database.getCatalog().getDbFile(tableId);
+        updatePages(dbFile.insertTuple(tid, tuple), tid);
     }
 
     /**
-     *
+     * 指定事务在指定的表中删除元组，并将页面设置为dirty
+     * TODO 需要修改页面内容，故后续需要请求写锁
      * @param tid 事务ID
      * @param tuple 需要删除的元组
      */
     public void deleteTuple(TransactionId tid, Tuple tuple)
         throws DbException, IOException {
-        // TODO
+        DbFile dbFile = Database.getCatalog().getDbFile(
+                tuple.getRecordId().getPageId().getTableId());
+        updatePages(dbFile.deleteTuple(tid, tuple), tid);
     }
 
+    /**
+     * 刷新磁盘中的一个指定页面，使之不dirty
+     * @param pid 页面ID
+     */
+    public synchronized void flushPage(PageId pid) throws IOException {
+        Page flushPage = cache.get(pid); // 获得需要刷新的页面
+        // 通过tableId得到对应的DbFIle，将page写入对应的DbFile中
+        int tableId = pid.getTableId();
+        DbFile dbFile = Database.getCatalog().getDbFile(tableId);
+        // 获得上一个对该页面操作的事务ID
+        TransactionId tid = flushPage.isDirty();
+        if (tid != null) {
+            // TODO 日志处理
+        }
+        dbFile.writePage(flushPage);
+        flushPage.setDirty(false, null);
+    }
 
+    /**
+     * 刷新磁盘中所有的脏页，使这些页面不dirty
+     */
+    public synchronized void flushAllPages() throws IOException {
+        for (Map.Entry<PageId, Page> entry: cache.entrySet()) {
+            Page page = entry.getValue();
+            if (page.isDirty() != null) {
+                // 页面dirty
+                flushPage(page.getId());
+            }
+        }
+    }
+
+    /**
+     * 刷新指定事务对应的所有页面
+     * @param tid 事务ID
+     */
+    public synchronized void flushPages(TransactionId tid) throws IOException {
+        for (Map.Entry<PageId, Page> entry: cache.entrySet()) {
+            Page page = entry.getValue();
+            // TODO 数据库恢复相关操作待补充
+            if (page.isDirty() == tid) {
+                // 只刷新指定事务的相应页面
+                flushPage(page.getId());
+            }
+        }
+    }
+
+    /**
+     * 从缓冲池中删除一个指定页面
+     * // TODO 后续需要实现数据库恢复的内容，如保存回滚（ROLL BACK）页面
+     * @param pid 页面ID
+     */
+    public synchronized void discardPage(PageId pid) {
+        cache.remove(pid);
+    }
+
+    /**
+     * 从缓冲池中驱逐一个页面，需要刷新磁盘中的页面以确保脏页已更新
+     */
+    private synchronized void evictPage() throws DbException {
+        PageId evictPageId = null;
+        Page page = null;
+        boolean isAllDirty = true;
+        for (int i=0; i<cache.size(); i++) {
+            evictPageId = evictStrategy.getEvictPageId();
+            page = cache.get(evictPageId);
+            if (page.isDirty() != null) {
+                evictStrategy.modifyData(evictPageId);
+            } else {
+                // 有不dirty的页面，可以进行驱逐
+                isAllDirty = false;
+                discardPage(evictPageId); // 从cache中删除该页面
+                break;
+            }
+        }
+        if (isAllDirty) {
+            // 所有页面都dirty
+            // TODO 随机选择一个页面进行驱逐
+            throw new DbException("all the pages are dirty");
+        }
+    }
 }
