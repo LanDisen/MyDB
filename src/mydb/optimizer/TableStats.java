@@ -184,18 +184,17 @@ public class TableStats {
      * @return 返回顺序扫描该表的估计成本
      */
     public double estimateScanCost() {
-        // TODO
-        return 0;
+        // 进行了两次全表扫描（第一次得到最值，第二次统计信息）
+        return pageNum * ioCostPerPage * 2;
     }
 
     /**
-     * 给定某个谓词的选择度（selectivity）因素，估计一个关系的元组数量（基数）
-     * @param selectivityFactor 某个谓词得到的选择度（selectivity）因素
-     * @return 返回扫描的估计基数
+     * 给定某个谓词的选择度（selectivity），估计一个关系的元组数量（基数）
+     * @param selectivity 某个谓词得到的选择度（selectivity）
+     * @return 返回扫描的估计基数（元组总数乘以选择度）
      */
-    public int estimateTableCardinality(double selectivityFactor) {
-        // TODO
-        return 0;
+    public int estimateTableCardinality(double selectivity) {
+        return (int) (tuplesTotalNum * selectivity);
     }
 
     /**
@@ -205,27 +204,36 @@ public class TableStats {
      * @return 返回所估计的该表的平均选择度（使用直方图进行估计）
      */
     public double avgSelectivity(int fieldIndex, Predicate.Op op) {
-        // TODO
-        return 1.0;
+        Type type = this.tupleDesc.getFieldType(fieldIndex);
+        if (type.equals(Type.INT_TYPE)) {
+            return intHistogramMap.get(fieldIndex).avgSelectivity();
+        } else {
+            return strHistogramMap.get(fieldIndex).avgSelectivity();
+        }
     }
 
     /**
      * 给定谓词以估计该表某个字段的选择度（selectivity）
-     * @param field 谓词所操作的字段
+     * @param fieldIndex 谓词所操作的字段索引
      * @param op 谓词操作符（Predicate.Op）
      * @param constant 进行谓词比较的值
      * @return 返回所估计的选择度（selectivity）
      */
-    public double estimateSelectivity(int field, Predicate.Op op, Field constant) {
-        // TODO
-        return 1.0;
+    public double estimateSelectivity(int fieldIndex, Predicate.Op op, Field constant) {
+        Type type = this.tupleDesc.getFieldType(fieldIndex);
+        if (type.equals(Type.INT_TYPE)) {
+            return intHistogramMap.get(fieldIndex).estimateSelectivity(
+                    op, ((IntField) constant).getValue());
+        } else {
+            return strHistogramMap.get(fieldIndex).estimateSelectivity(
+                    op, ((StringField) constant).getValue());
+        }
     }
 
     /**
      * @return 返回该表的元组总数量（总行数）
      */
     public int getTuplesTotalNum() {
-        // TODO
-        return 0;
+        return tuplesTotalNum;
     }
 }
