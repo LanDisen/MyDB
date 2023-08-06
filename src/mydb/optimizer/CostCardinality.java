@@ -3,22 +3,22 @@ package mydb.optimizer;
 import java.util.List;
 
 /**
- * ÓÃÓÚ±íÊ¾Ò»¸ö²éÑ¯¼Æ»®µÄ³É±¾£¨cost£©ºÍ»ùÊı£¨cardinality£©
+ * ç”¨äºè¡¨ç¤ºä¸€ä¸ªæŸ¥è¯¢è®¡åˆ’çš„æˆæœ¬ï¼ˆcostï¼‰å’ŒåŸºæ•°ï¼ˆcardinalityï¼‰
  */
 public class CostCardinality {
 
     /**
-     * ×îÓÅ²éÑ¯¼Æ»®µÄ³É±¾
+     * æœ€ä¼˜æŸ¥è¯¢è®¡åˆ’çš„æˆæœ¬
      */
     public double cost;
 
     /**
-     * ×îÓÅ²éÑ¯¼Æ»®µÄ»ùÊı
+     * æœ€ä¼˜æŸ¥è¯¢è®¡åˆ’çš„åŸºæ•°
      */
     public int cardinality;
 
     /**
-     * ×îÓÅµÄ²éÑ¯¼Æ»®
+     * æœ€ä¼˜çš„æŸ¥è¯¢è®¡åˆ’
      */
     public List<LogicalJoinNode> plan;
 }
