@@ -4,7 +4,7 @@ import mydb.execution.OpIterator;
 import mydb.execution.Predicate;
 
 /**
- * ×Ó²éÑ¯Á¬½Ó½áµã£¬ÓÃÓÚÁ¬½Ó£¨JOIN£©Ò»¸ö×Ö¶ÎºÍÒ»¸ö×Ó²éÑ¯µÄ½á¹û²¢½«¸Ã½áµãÌí¼Óµ½Âß¼­²éÑ¯¼Æ»®ÖĞ
+ * å­æŸ¥è¯¢è¿æ¥ç»“ç‚¹ï¼Œç”¨äºè¿æ¥ï¼ˆJOINï¼‰ä¸€ä¸ªå­—æ®µå’Œä¸€ä¸ªå­æŸ¥è¯¢çš„ç»“æœå¹¶å°†è¯¥ç»“ç‚¹æ·»åŠ åˆ°é€»è¾‘æŸ¥è¯¢è®¡åˆ’ä¸­
  */
 public class LogicalSubplanJoinNode extends LogicalJoinNode {
 
@@ -14,7 +14,7 @@ public class LogicalSubplanJoinNode extends LogicalJoinNode {
         this.leftTableAlias = tableAlias;
         String[] temps = joinField.split("[.]");
         if (temps.length > 1) {
-            this.leftTableFieldName = temps[temps.length - 1]; // ×îºóÒ»¸öÎª×Ö¶ÎÃû
+            this.leftTableFieldName = temps[temps.length - 1]; // æœ€åä¸€ä¸ªä¸ºå­—æ®µå
         } else {
             this.leftTableFieldName = joinField;
         }
