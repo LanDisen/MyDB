@@ -122,6 +122,7 @@ public class TableStats {
         // 创建一个事务进行全表扫描
         TransactionId tid = new TransactionId();
         SeqScan seqScan = new SeqScan(tid, tableId);
+        seqScan.open();
         // 记录每个字段的最小值和最大值
         Map<Integer, Integer> minMap = new HashMap<>();
         Map<Integer, Integer> maxMap = new HashMap<>();
