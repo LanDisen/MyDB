@@ -106,7 +106,7 @@ public class SeqScan implements OpIterator {
     @Override
     public boolean hasNext() throws DbException  {
         if (iterator == null) {
-            return true;
+            return false;
         }
         return iterator.hasNext();
     }
