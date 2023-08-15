@@ -3,6 +3,7 @@ package mydb.execution;
 import mydb.common.DbException;
 import mydb.storage.Tuple;
 import mydb.storage.TupleDesc;
+import mydb.transaction.TransactionException;
 
 import java.io.Serial;
 import java.util.*;
@@ -32,7 +33,7 @@ public class Filter extends Operator {
     }
 
     public void open()
-            throws DbException, NoSuchElementException {
+            throws DbException, NoSuchElementException, TransactionException {
         super.open();
         child.open();
     }
@@ -43,7 +44,7 @@ public class Filter extends Operator {
     }
 
     @Override
-    public void rewind() throws DbException {
+    public void rewind() throws DbException, TransactionException {
         this.child.rewind();
     }
 
@@ -53,7 +54,7 @@ public class Filter extends Operator {
      */
     @Override
     protected Tuple fetchNext()
-            throws DbException, NoSuchElementException {
+            throws DbException, NoSuchElementException, TransactionException {
         while (this.child.hasNext()) {
             Tuple tuple = child.next();
             if (this.predicate.filter(tuple)) {

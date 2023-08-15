@@ -4,6 +4,7 @@ import mydb.common.DbException;
 import mydb.common.Type;
 import mydb.storage.Tuple;
 import mydb.storage.TupleDesc;
+import mydb.transaction.TransactionException;
 
 import java.io.Serial;
 import java.util.*;
@@ -77,7 +78,7 @@ public class Aggregate extends Operator {
     }
 
     public void open()
-            throws DbException, NoSuchElementException {
+            throws DbException, NoSuchElementException, TransactionException {
         super.open();
         child.open();
         while (child.hasNext()) {
@@ -95,7 +96,7 @@ public class Aggregate extends Operator {
     }
 
     @Override
-    public void rewind() throws DbException {
+    public void rewind() throws DbException, TransactionException {
         opIterator.rewind();
     }
 
@@ -108,7 +109,7 @@ public class Aggregate extends Operator {
      */
     @Override
     protected Tuple fetchNext()
-            throws DbException, NoSuchElementException {
+            throws DbException, NoSuchElementException, TransactionException {
         if (opIterator.hasNext()) {
             return opIterator.next();
         }

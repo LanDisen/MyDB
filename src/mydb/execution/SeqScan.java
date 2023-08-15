@@ -8,6 +8,7 @@ import mydb.storage.DbFile;
 import mydb.storage.DbFileIterator;
 import mydb.storage.Tuple;
 import mydb.storage.TupleDesc;
+import mydb.transaction.TransactionException;
 import mydb.transaction.TransactionId;
 
 import java.util.*;
@@ -87,13 +88,13 @@ public class SeqScan implements OpIterator {
         this.dbFile = catalog.getDbFile(tableId);
         try {
             open();
-        } catch (DbException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void open() throws DbException {
+    public void open() throws DbException, TransactionException {
         this.iterator = this.dbFile.iterator(tid);
         this.iterator.open();
     }
@@ -104,7 +105,7 @@ public class SeqScan implements OpIterator {
     }
 
     @Override
-    public boolean hasNext() throws DbException  {
+    public boolean hasNext() throws DbException, TransactionException {
         if (iterator == null) {
             return false;
         }
@@ -112,7 +113,7 @@ public class SeqScan implements OpIterator {
     }
 
     @Override
-    public Tuple next() throws DbException, NoSuchElementException{
+    public Tuple next() throws DbException, NoSuchElementException, TransactionException {
         if (iterator == null) {
             throw new NoSuchElementException("No next tuple");
         }
@@ -124,7 +125,7 @@ public class SeqScan implements OpIterator {
     }
 
     @Override
-    public void rewind() throws DbException {
+    public void rewind() throws DbException, TransactionException {
         iterator.rewind();
     }
 

@@ -7,6 +7,7 @@ import mydb.storage.BufferPool;
 import mydb.storage.IntField;
 import mydb.storage.Tuple;
 import mydb.storage.TupleDesc;
+import mydb.transaction.TransactionException;
 import mydb.transaction.TransactionId;
 
 import java.io.IOException;
@@ -37,7 +38,7 @@ public class Delete extends Operator {
         this.deletedTuple = null;
     }
 
-    public void open() throws DbException {
+    public void open() throws DbException, TransactionException {
         super.open();
         child.open();
     }
@@ -48,7 +49,7 @@ public class Delete extends Operator {
     }
 
     @Override
-    public void rewind() throws DbException {
+    public void rewind() throws DbException, TransactionException {
         child.rewind();
     }
 
@@ -57,7 +58,7 @@ public class Delete extends Operator {
      * @return 返回单一字段元组，其包括已删除的记录数量
      */
     @Override
-    protected Tuple fetchNext() throws DbException, NoSuchElementException {
+    protected Tuple fetchNext() throws DbException, NoSuchElementException, TransactionException {
         // 该方法只需调用一次
         if (deletedTuple != null) {
             // 该方法已被重复调用

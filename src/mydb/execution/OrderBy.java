@@ -4,6 +4,7 @@ import mydb.common.DbException;
 import mydb.storage.Field;
 import mydb.storage.Tuple;
 import mydb.storage.TupleDesc;
+import mydb.transaction.TransactionException;
 
 import java.io.Serial;
 import java.util.*;
@@ -59,7 +60,7 @@ public class OrderBy extends Operator {
         return this.orderByFieldName;
     }
 
-    public void open() throws DbException, NoSuchElementException {
+    public void open() throws DbException, NoSuchElementException, TransactionException {
         this.child.open();
         while (child.hasNext()) {
             childTuples.add(child.next());
@@ -77,7 +78,7 @@ public class OrderBy extends Operator {
     }
 
     @Override
-    public void rewind() throws DbException {
+    public void rewind() throws DbException, TransactionException {
         tupleIterator = childTuples.iterator();
     }
 
@@ -85,7 +86,7 @@ public class OrderBy extends Operator {
      * @return 返回下一个已排序的元组，若后面没有元组则返回null
      */
     @Override
-    protected Tuple fetchNext() throws DbException, NoSuchElementException {
+    protected Tuple fetchNext() throws DbException, NoSuchElementException, TransactionException {
         if (tupleIterator == null || !tupleIterator.hasNext()) {
             return null;
         }

@@ -7,6 +7,7 @@ import mydb.storage.BufferPool;
 import mydb.storage.IntField;
 import mydb.storage.Tuple;
 import mydb.storage.TupleDesc;
+import mydb.transaction.TransactionException;
 import mydb.transaction.TransactionId;
 
 import java.io.Serial;
@@ -41,7 +42,7 @@ public class Insert extends Operator {
         this.insertedTuple = null;
     }
 
-    public void open() throws DbException {
+    public void open() throws DbException, TransactionException {
         super.open();
         child.open();
     }
@@ -52,7 +53,7 @@ public class Insert extends Operator {
     }
 
     @Override
-    public void rewind() throws DbException {
+    public void rewind() throws DbException, TransactionException {
         child.rewind();
     }
 
@@ -62,7 +63,7 @@ public class Insert extends Operator {
      * @return 返回一个具有一个字段的元组，其包含已插入的记录数量。若该方法被重复调用则返回null
      */
     @Override
-    protected Tuple fetchNext() throws DbException, NoSuchElementException {
+    protected Tuple fetchNext() throws DbException, NoSuchElementException, TransactionException {
         // 该方法只需调用一次
         if (insertedTuple != null) {
             // 该方法已被重复调用

@@ -4,6 +4,7 @@ import mydb.common.DbException;
 import mydb.common.Type;
 import mydb.storage.Tuple;
 import mydb.storage.TupleDesc;
+import mydb.transaction.TransactionException;
 
 import java.io.Serial;
 import java.util.*;
@@ -47,7 +48,7 @@ public class Project extends Operator {
         this.tupleDesc = new TupleDesc(types, fieldNames);
     }
 
-    public void open() throws DbException {
+    public void open() throws DbException, TransactionException {
         child.open();
         super.open();
     }
@@ -58,7 +59,7 @@ public class Project extends Operator {
     }
 
     @Override
-    public void rewind() throws DbException {
+    public void rewind() throws DbException, TransactionException {
         this.child.rewind();
     }
 
@@ -68,7 +69,7 @@ public class Project extends Operator {
      */
     @Override
     protected Tuple fetchNext()
-            throws DbException, NoSuchElementException{
+            throws DbException, NoSuchElementException, TransactionException {
         if (!child.hasNext()) {
             return null;
         }

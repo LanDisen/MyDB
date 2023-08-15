@@ -8,6 +8,7 @@ import mydb.execution.Predicate;
 import mydb.execution.SeqScan;
 import mydb.storage.*;
 import mydb.transaction.Transaction;
+import mydb.transaction.TransactionException;
 import mydb.transaction.TransactionId;
 
 import java.util.*;
@@ -106,7 +107,7 @@ public class TableStats {
         // 获得表的DbFile，然后进行全表扫描（不止一次扫描），计算所需要的统计信息
         try {
             initHistogram(tableId);
-        }  catch (DbException e) {
+        }  catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -116,7 +117,7 @@ public class TableStats {
      * @param tableId 表ID
      */
     private void initHistogram(int tableId)
-            throws DbException {
+            throws DbException, TransactionException {
         // 第一次全表扫描首先获得表的最大最小值
         int fieldsNum = tupleDesc.getFieldsNum();
         // 创建一个事务进行全表扫描

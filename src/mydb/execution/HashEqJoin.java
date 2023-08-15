@@ -3,6 +3,7 @@ package mydb.execution;
 import mydb.common.DbException;
 import mydb.storage.Tuple;
 import mydb.storage.TupleDesc;
+import mydb.transaction.TransactionException;
 
 import java.io.Serial;
 import java.util.*;
@@ -69,8 +70,7 @@ public class HashEqJoin extends Operator {
      * 加载哈希表
      * @return 如果map不为空则返回true（成功加载了该map），否则返回false
      */
-    private boolean loadMap() throws DbException {
-        // TODO 事务异常
+    private boolean loadMap() throws DbException, TransactionException {
         int cnt = 0;
         map.clear();
         while (child1.hasNext()) {
@@ -88,7 +88,7 @@ public class HashEqJoin extends Operator {
         return cnt > 0;
     }
 
-    public void open() throws DbException, NoSuchElementException {
+    public void open() throws DbException, NoSuchElementException, TransactionException {
         child1.open();
         child2.open();
         loadMap();
@@ -107,7 +107,7 @@ public class HashEqJoin extends Operator {
 
 
     @Override
-    public void rewind() throws DbException {
+    public void rewind() throws DbException, TransactionException {
         child1.rewind();
         child2.rewind();
     }
@@ -144,7 +144,7 @@ public class HashEqJoin extends Operator {
      * @return 返回下一个由JOIN生成的元组（Tuple），如果没有更多元组则返回null
      */
     @Override
-    protected Tuple fetchNext() throws DbException, NoSuchElementException {
+    protected Tuple fetchNext() throws DbException, NoSuchElementException, TransactionException {
         if (tupleIterator != null && tupleIterator.hasNext()) {
             tuple1 = tupleIterator.next();
             int leftFieldsNum = tuple1.getTupleDesc().getFieldsNum();
