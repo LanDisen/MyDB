@@ -5,6 +5,7 @@ import mydb.common.DbException;
 import mydb.common.Permissions;
 import mydb.storage.lock.LockManager;
 import mydb.storage.lock.PageLock;
+import mydb.transaction.Transaction;
 import mydb.transaction.TransactionException;
 import mydb.transaction.TransactionId;
 
@@ -124,10 +125,10 @@ public class BufferPool {
     /**
      * 指定事务释放在指定页面的锁
      * @param tid 事务ID
-     * @param pid 页面ID
+     * @param pid 需要释放锁的页面ID
      */
-    public void releaseLock(TransactionId tid, PageId pid) {
-        // TODO
+    public void releasePage(TransactionId tid, PageId pid) {
+        lockManager.unlock(pid, tid);
     }
 
     /**
@@ -135,7 +136,45 @@ public class BufferPool {
      * @param tid 事务ID
      */
     public void transactionComplete(TransactionId tid) {
-        // TODO
+        // TOD        transactionComplete(tid, true);
+    }
+
+    /**
+     * 完成事务进行提交（commit）或者回滚（rollback）
+     * @param tid 事务ID
+     * @param commit true则事务顺利完成进行提交，false为事务异常终止（abort）
+     */
+    public void transactionComplete(TransactionId tid, boolean commit) {
+        if (commit) {
+            // 提交事务，刷新该事务持有的页面写入到磁盘（使之不dirty）
+            try {
+                flushPages(tid);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // 终止该事务，从磁盘重新加载脏页（恢复页面刷新前的状态）
+            recoverPages(tid);
+        }
+        // 事务完成，释放该事务持有的所有锁
+        lockManager.unlockAll(tid);
+    }
+
+    /**
+     * 事务异常终止，需要回滚操作，从磁盘中重新加载脏页
+     * @param tid 事务ID
+     */
+    private synchronized void recoverPages(TransactionId tid) {
+        for (Map.Entry<PageId, Page> entry: cache.entrySet()) {
+            PageId pid = entry.getKey();
+            Page page = entry.getValue();
+            if (page.isDirty().equals(tid)) {
+                int tableId = pid.getTableId();
+                DbFile dbFile = Database.getCatalog().getDbFile(tableId);
+                Page dirtyPage = dbFile.readPage(pid);
+                cache.put(pid, dirtyPage);
+            }
+        }
     }
 
     /**
@@ -145,8 +184,7 @@ public class BufferPool {
      * @return 如果指定事务在指定页面上持有锁则返回true，否则返回false
      */
     public boolean holdsLock(TransactionId tid, PageId pid) {
-        // TODO
-        return false;
+        return lockManager.hasLock(pid, tid);
     }
 
     /**
@@ -167,7 +205,6 @@ public class BufferPool {
 
     /**
      * 指定事务在指定的表中插入一个新元组，需要将页面设置为dirty
-     * // TODO 后续需要请求写锁，如果指定页面已被上写锁则事务会被阻塞
      * @param tid 事务ID
      * @param tableId 表ID
      * @param tuple 需要插入的元组
@@ -181,7 +218,6 @@ public class BufferPool {
 
     /**
      * 指定事务在指定的表中删除元组，并将页面设置为dirty
-     * TODO 需要修改页面内容，故后续需要请求写锁
      * @param tid 事务ID
      * @param tuple 需要删除的元组
      */
@@ -193,7 +229,7 @@ public class BufferPool {
     }
 
     /**
-     * 刷新磁盘中的一个指定页面，使之不dirty
+     * 刷新磁盘中的一个指定页面，将其写入磁盘，使之不dirty
      * @param pid 页面ID
      */
     public synchronized void flushPage(PageId pid) throws IOException {
@@ -211,7 +247,7 @@ public class BufferPool {
     }
 
     /**
-     * 刷新磁盘中所有的脏页，使这些页面不dirty
+     * 刷新磁盘中所有的脏页，将它们写入到磁盘，使这些页面不dirty
      */
     public synchronized void flushAllPages() throws IOException {
         for (Map.Entry<PageId, Page> entry: cache.entrySet()) {
@@ -269,7 +305,7 @@ public class BufferPool {
         if (isAllDirty) {
             // 所有页面都dirty
             // TODO 随机选择一个页面进行驱逐
-            throw new DbException("all the pages are dirty");
+            throw new DbException("All the pages are dirty.");
         }
     }
 }

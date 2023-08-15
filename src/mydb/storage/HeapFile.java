@@ -121,7 +121,7 @@ public class HeapFile implements DbFile {
             if (page.getEmptySlotsNum() == 0) {
                 // 页面已满，该事务寻找下一个可以插入元组的页面
                 // 页面已满需要释放该事务在页面上的锁，允许其它事务获取该页面，避免死锁
-                bufferPool.releaseLock(tid, page.getId());
+                bufferPool.releasePage(tid, page.getId());
                 continue;
             }
             page.insertTuple(tuple);
