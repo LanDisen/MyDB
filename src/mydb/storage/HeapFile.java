@@ -3,6 +3,7 @@ package mydb.storage;
 import mydb.common.Database;
 import mydb.common.DbException;
 import mydb.common.Permissions;
+import mydb.transaction.TransactionException;
 import mydb.transaction.TransactionId;
 
 import java.io.*;
@@ -109,7 +110,7 @@ public class HeapFile implements DbFile {
      */
     @Override
     public List<Page> insertTuple(TransactionId tid, Tuple tuple)
-            throws DbException, IOException {
+            throws DbException, IOException, TransactionException {
         List<Page> modifiedPages = new ArrayList<>(); // 由于插入了新的元组而将会被修改的页面列表
         int pagesNum = getPagesNum();
         for (int i=0; i<pagesNum; i++) {
@@ -152,7 +153,7 @@ public class HeapFile implements DbFile {
      */
     @Override
     public List<Page> deleteTuple(TransactionId tid, Tuple tuple)
-            throws DbException, IOException {
+            throws DbException, IOException, TransactionException {
         HeapPage page = (HeapPage) bufferPool.getPage(
                 tid,
                 tuple.getRecordId().getPageId(),
@@ -183,7 +184,7 @@ public class HeapFile implements DbFile {
             this.tid = tid;
         }
 
-        private Iterator<Tuple> getPageTuples(int pageIndex) throws DbException {
+        private Iterator<Tuple> getPageTuples(int pageIndex) throws DbException, TransactionException {
             if (pageIndex < 0 || pageIndex >= heapFile.getPagesNum()) {
                 String errorMsg = String.format("page %d do not exists in heap file %d", pageIndex, heapFile.getId());
                 throw new DbException(errorMsg);
@@ -194,7 +195,7 @@ public class HeapFile implements DbFile {
         }
 
         @Override
-        public void open() throws DbException {
+        public void open() throws DbException, TransactionException {
             this.pageIndex = 0;
             this.iterator = getPageTuples(pageIndex);
         }
@@ -205,7 +206,7 @@ public class HeapFile implements DbFile {
         }
 
         @Override
-        public boolean hasNext() throws DbException  {
+        public boolean hasNext() throws DbException, TransactionException  {
             if (iterator == null) {
                 return false;
             }
@@ -224,7 +225,7 @@ public class HeapFile implements DbFile {
         }
 
         @Override
-        public Tuple next() throws DbException ,NoSuchElementException {
+        public Tuple next() throws DbException ,NoSuchElementException, TransactionException {
             if (iterator == null || !iterator.hasNext()) {
                 throw new NoSuchElementException();
             }
@@ -232,7 +233,7 @@ public class HeapFile implements DbFile {
         }
 
         @Override
-        public void rewind() throws DbException {
+        public void rewind() throws DbException, TransactionException {
             close();
             open();
         }

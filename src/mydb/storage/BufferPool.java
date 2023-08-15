@@ -5,6 +5,7 @@ import mydb.common.DbException;
 import mydb.common.Permissions;
 import mydb.storage.lock.LockManager;
 import mydb.storage.lock.PageLock;
+import mydb.transaction.TransactionException;
 import mydb.transaction.TransactionId;
 
 import mydb.storage.evict.EvictStrategy;
@@ -82,7 +83,7 @@ public class BufferPool {
      * @param perm Permissions，在该页面的操作权限，包括READ_ONLY和READ_WRITE
      */
     public Page getPage(TransactionId tid, PageId pid, Permissions perm)
-        throws DbException {
+        throws DbException, TransactionException {
         int pageType = PageLock.SHARE;
         if (perm == Permissions.READ_WRITE) {
             pageType = PageLock.EXCLUSIVE;
@@ -101,8 +102,7 @@ public class BufferPool {
             long now = System.currentTimeMillis();
             if (now - start > timeout) {
                 // 请求页面超时
-                // TODO 抛出一个事务异常
-                throw new DbException("Transaction " + tid + " failed to get page " + pid);
+                throw new TransactionException();
             }
         }
         // 此时事务成功获取了一个页面
@@ -173,7 +173,7 @@ public class BufferPool {
      * @param tuple 需要插入的元组
      */
     public void insertTuple(TransactionId tid, int tableId, Tuple tuple)
-        throws DbException, IOException {
+        throws DbException, IOException, TransactionException {
         // 获取需要插入元组的表
         DbFile dbFile = Database.getCatalog().getDbFile(tableId);
         updatePages(dbFile.insertTuple(tid, tuple), tid);
@@ -186,7 +186,7 @@ public class BufferPool {
      * @param tuple 需要删除的元组
      */
     public void deleteTuple(TransactionId tid, Tuple tuple)
-        throws DbException, IOException {
+        throws DbException, IOException, TransactionException {
         DbFile dbFile = Database.getCatalog().getDbFile(
                 tuple.getRecordId().getPageId().getTableId());
         updatePages(dbFile.deleteTuple(tid, tuple), tid);

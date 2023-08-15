@@ -2,6 +2,7 @@ package mydb.storage;
 
 import mydb.common.DbException;
 import mydb.common.Catalog;
+import mydb.transaction.TransactionException;
 import mydb.transaction.TransactionId;
 
 import java.io.*;
@@ -32,7 +33,7 @@ public interface DbFile {
      * @throws IOException 如果指定的文件不可读或写会抛出IO异常
      */
     List<Page> insertTuple(TransactionId tid, Tuple tuple)
-            throws DbException, IOException;
+            throws DbException, IOException, TransactionException;
 
     /**
      * 指定事务在指定的数据库文件上删除元组，写文件时需要请求写锁
@@ -42,7 +43,7 @@ public interface DbFile {
      * @throws DbException 如果元组无法被删除，或者不属于指定的数据库文件时会抛出数据库异常
      */
     List<Page> deleteTuple(TransactionId tid, Tuple tuple)
-            throws DbException, IOException;
+            throws DbException, IOException, TransactionException;
 
     /**
      * @return 返回DbFIle在Catalog中唯一的ID
