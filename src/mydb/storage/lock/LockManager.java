@@ -2,6 +2,7 @@ package mydb.storage.lock;
 
 import mydb.storage.PageId;
 
+import mydb.transaction.TransactionException;
 import mydb.transaction.TransactionId;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,7 +28,7 @@ public class LockManager {
      * @param lockType 锁的类型，包括共享锁（SHARE）和排他锁（EXCLUSIVE）
      */
     public synchronized boolean lock(PageId pid, TransactionId tid, int lockType)
-            throws InterruptedException{
+            throws InterruptedException, TransactionException {
         // 获得pid页面存在的事务以及对应的锁
         Map<TransactionId, PageLock> locks = pageLocks.get(pid);
         // 若该页面没有任何锁，则tid事务能够成功请求锁
@@ -48,9 +49,8 @@ public class LockManager {
             // 尝试请求写锁
             if (lockType == PageLock.EXCLUSIVE) {
                 if (locks.size() > 1) {
-                    // 该页面具有数量大于1的锁（显然是读锁），请求写锁失败
-                    // TODO 抛出事务异常
-                    return false;
+                    // 该页面具有数量大于1的锁（显然是读锁），请求写锁失败，事务异常
+                    throw new TransactionException();
                 }
                 if (locks.size() == 1) {
                     if (pageLock.getType() == PageLock.EXCLUSIVE) {
@@ -112,7 +112,6 @@ public class LockManager {
         }
        return false;
     }
-
 
     /**
      * 对应事务在对应页面上释放锁
