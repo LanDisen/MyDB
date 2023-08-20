@@ -6,7 +6,11 @@ package mydb.storage;
  */
 public interface PageId {
 
-    //int[] serialize();
+    /**
+     *
+     * @return 返回该页面ID对象的序列化整数集合表示（用于日志）。
+     */
+    int[] serialize();
 
     /**
      * @return 通过PageId返回唯一的表ID

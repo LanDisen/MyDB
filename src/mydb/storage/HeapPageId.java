@@ -13,7 +13,7 @@ public class HeapPageId implements PageId {
     /**
      * HeapPageId构造函数，创建一个PageId以确定特定的页面和表
      * @param tableId 所引用的表的ID
-     * @param pageIndex 该表的页面数量
+     * @param pageIndex 该表的页面索引
      */
     public HeapPageId(int tableId, int pageIndex) {
         this.tableId = tableId;
@@ -26,7 +26,7 @@ public class HeapPageId implements PageId {
     }
 
     /**
-     * @return 返回对应表关联的页面数量
+     * @return 返回对应表关联的页面索引
      */
     @Override
     public int getPageIndex() {
@@ -48,5 +48,17 @@ public class HeapPageId implements PageId {
             return true;
         }
         return false;
+    }
+
+    /**
+     * @return 返回HeapPageId对象的序列化表示，用于写入磁盘（持久化）。
+     *
+     */
+    @Override
+    public int[] serialize() {
+        int[] data = new int[2];
+        data[0] = getTableId(); // 表ID
+        data[1] = getPageIndex(); // 所在页面的索引
+        return data;
     }
 }
