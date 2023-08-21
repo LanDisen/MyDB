@@ -72,9 +72,9 @@ public class HeapPage implements Page {
             e.printStackTrace();
         }
         dis.close();
-        // TODO image
         this.dirty = false;
         this.tid = null;
+        setBeforeImage(); // 拷贝一份旧数据
     }
 
     /**
@@ -312,5 +312,27 @@ public class HeapPage implements Page {
             }
         }
         return tupleList.iterator();
+    }
+
+    @Override
+    public HeapPage getBeforeImage() {
+        try {
+            byte[] tempOldData = null;
+            synchronized (oldDataLock) {
+                tempOldData = oldData;
+            }
+            return new HeapPage(pid, tempOldData);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return null;
+    }
+
+    @Override
+    public void setBeforeImage() {
+        synchronized (oldDataLock) {
+            oldData = getPageData().clone();
+        }
     }
 }
