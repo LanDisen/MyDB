@@ -240,7 +240,9 @@ public class BufferPool {
         // 获得上一个对该页面操作的事务ID
         TransactionId tid = flushPage.isDirty();
         if (tid != null) {
-            // TODO 日志处理
+            // 保存修改前后的页面映像到日志文件中
+            Database.getLogFile().logUpdate(tid, flushPage.getBeforeImage(), flushPage);
+            Database.getLogFile().force();
         }
         dbFile.writePage(flushPage);
         flushPage.setDirty(false, null);
@@ -266,7 +268,7 @@ public class BufferPool {
     public synchronized void flushPages(TransactionId tid) throws IOException {
         for (Map.Entry<PageId, Page> entry: cache.entrySet()) {
             Page page = entry.getValue();
-            // TODO 数据库恢复相关操作待补充
+            page.setBeforeImage(); // 保存页面映像
             if (page.isDirty() == tid) {
                 // 只刷新指定事务的相应页面
                 flushPage(page.getId());
@@ -276,7 +278,6 @@ public class BufferPool {
 
     /**
      * 从缓冲池中删除一个指定页面
-     * // TODO 后续需要实现数据库恢复的内容，如保存回滚（ROLL BACK）页面
      * @param pid 页面ID
      */
     public synchronized void discardPage(PageId pid) {
