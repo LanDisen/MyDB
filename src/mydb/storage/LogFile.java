@@ -469,12 +469,74 @@ public class LogFile {
         }
     }
 
-//    /**
-//     * 用于打印具有可读性的日志记录信息
-//     */
-//    public void print() throws IOException {
-//        // TODO
-//    }
+    /**
+     * 用于打印具有可读性的日志记录信息，包括文件偏移位置、日志记录类型等信息
+     */
+    public void print() throws IOException {
+        // 保存日志文件当前指针位置
+        long curOffset = logFile.getFilePointer();
+        logFile.seek(0);
+        System.out.println("0: checkpoint record at offset " + logFile.readLong());
+        while (true) {
+            try {
+                int logRecordType = logFile.readInt(); // 日志记录类型
+                long checkPointTid = logFile.readLong(); // 事务ID
+                // 打印日志记录类型和对应的事务ID
+                System.out.println(logFile.getFilePointer() - (INT_SIZE + LONG_SIZE) +
+                        ": RECORD TYPE " + logRecordType);
+                System.out.println(logFile.getFilePointer() - LONG_SIZE + ": TID "
+                        + checkPointTid);
+                switch (logRecordType) {
+                    case BEGIN_RECORD -> {
+                        System.out.println("(BEGIN)");
+                        System.out.println(logFile.getFilePointer() + ": RECORD START OFFSET: " + logFile.readLong());
+                    }
+                    case ABORT_RECORD -> {
+                        System.out.println("(ABORT)");
+                        System.out.println(logFile.getFilePointer() + ": RECORD START OFFSET: " + logFile.readLong());
+                    }
+                    case COMMIT_RECORD -> {
+                        System.out.println("(COMMIT)");
+                        System.out.println(logFile.getFilePointer() + ": RECORD START OFFSET: " + logFile.readLong());
+                    }
+                    case UPDATE_RECORD -> {
+                        System.out.println("(UPDATE)");
+                        long beforeStart = logFile.getFilePointer();
+                        Page before = readPageData(logFile);
+                        long afterStart = logFile.getFilePointer();
+                        Page after = readPageData(logFile);
+
+                        System.out.println(beforeStart + ": before image table id: " + before.getId().getTableId());
+                        System.out.println((beforeStart + INT_SIZE + ": before image page index " + before.getId().getPageIndex()));
+                        System.out.println((beforeStart + INT_SIZE) + " TO" + (afterStart - INT_SIZE) + ": page data");
+
+                        System.out.println(afterStart + ": after image table id: " + after.getId().getTableId());
+                        System.out.println((afterStart + INT_SIZE + ": after image page index " + after.getId().getPageIndex()));
+                        System.out.println((afterStart + INT_SIZE) + " TO" + (logFile.getFilePointer()) + ": page data");
+
+                        System.out.println(logFile.getFilePointer() + ": RECORD START OFFSET: " + logFile.readLong());
+
+                    }
+                    case CHECKPOINT_RECORD -> {
+                        System.out.println("(CHECKPOINT)");
+                        int transactionsNum = logFile.readInt(); // 正在执行的事务数量
+                        System.out.println((logFile.getFilePointer() - INT_SIZE) + ": NUMBER OF EXECUTING TRANSACTIONS: " + transactionsNum);
+                        while (transactionsNum-- > 0) {
+                            long tid = logFile.readLong();
+                            long recordOffset = logFile.readLong();
+                            System.out.println(logFile.getFilePointer() - (LONG_SIZE + LONG_SIZE) + ": TID: " + tid);
+                            System.out.println((logFile.getFilePointer() - LONG_SIZE) + ": FIRST LOG RECORD: " + recordOffset);
+                        }
+                        System.out.println(logFile.getFilePointer() + ": RECORD START OFFSET: " + logFile.readLong());
+                    }
+                }
+            } catch (EOFException e) {
+                // 已到日志文件末尾
+                break;
+            }
+        }
+        logFile.seek(curOffset);
+    }
 
     public synchronized void force() throws IOException {
         // 将还未写入的数据（还在内存）全部强制推送到磁盘进行刷新
