@@ -33,4 +33,14 @@ public interface Page {
      */
     void setDirty(boolean dirty, TransactionId tid);
 
+    /**
+     * 获得该页面修改前的镜像（image）表示（用于数据库恢复）
+     */
+    Page getBeforeImage();
+
+    /**
+     * 用于事务对该页面修改前复制该页面内容
+     */
+    void setBeforeImage();
+
 }
