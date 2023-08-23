@@ -26,6 +26,10 @@ public class Query implements Serializable {
 
     transient private boolean started = false;
 
+    public Query(TransactionId tid) {
+        this.tid = tid;
+    }
+
     public Query(OpIterator root, TransactionId tid) {
         this.opIterator = root;
         this.tid = tid;
