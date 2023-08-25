@@ -20,6 +20,11 @@ public abstract class Operator implements OpIterator {
     private Tuple next = null;
     private boolean isOpen = false;
 
+    /**
+     * 该操作符估计的基数
+     */
+    private int cardinality = 0;
+
     @Override
     public void open() throws DbException, TransactionException {
         this.isOpen = true;
@@ -69,5 +74,19 @@ public abstract class Operator implements OpIterator {
     public abstract OpIterator[] getChildren();
 
     public abstract void setChildren(OpIterator[] children);
+
+    /**
+     * @return 返回该操作符的基数
+     */
+    public int getEstimatedCardinality() {
+        return this.cardinality;
+    }
+
+    /**
+     * 设置该操作符所估计的基数
+     */
+    public void setEstimatedCardinality(int cardinality) {
+        this.cardinality = cardinality;
+    }
 
 }
