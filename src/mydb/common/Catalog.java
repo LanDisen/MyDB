@@ -57,7 +57,7 @@ public class Catalog {
      * @throws NoSuchElementException 如果表不存在
      */
     public int getTableId(String tableName) throws NoSuchElementException {
-        if (tableName == null || tableName2Id.containsKey(tableName)) {
+        if (tableName == null || !tableName2Id.containsKey(tableName)) {
             throw new NoSuchElementException("A table named " + tableName + " is not found");
         }
         return tableName2Id.get(tableName);
@@ -156,8 +156,8 @@ public class Catalog {
                 Type[] typeArr = types.toArray(new Type[0]);
                 String[] nameArr = names.toArray(new String[0]);
                 TupleDesc tupleDesc = new TupleDesc(typeArr, nameArr);
-                HeapFile heapFile = new HeapFile(
-                        new File(baseFolder + "/" + tableName + ".dat"), tupleDesc);
+                String tablePath = baseFolder + "\\" + tableName + ".dat";
+                HeapFile heapFile = new HeapFile(new File(tablePath), tupleDesc);
                 addTable(heapFile, tableName, primaryKeyName);
                 System.out.println("Added table: " + tableName + " with schema " + tupleDesc);
             }
