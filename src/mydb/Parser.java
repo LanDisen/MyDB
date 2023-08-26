@@ -226,7 +226,8 @@ public class Parser {
         } else {
             // interactive=true，进入命令行交互模式
             // 读取控制台命令行输入的内容
-            ConsoleReader reader = new ConsoleReader();
+            // ConsoleReader reader = new ConsoleReader();
+            Scanner scanner = new Scanner(System.in);
             // 可以利用tab进行SQL命令的自动补全功能
             ArgumentCompletor completor = new ArgumentCompletor(
                     new SimpleCompletor(SQL_COMMANDS));
@@ -234,9 +235,17 @@ public class Parser {
             completor.setStrict(false);
 
             StringBuilder buffer = new StringBuilder();
-            String line;
+            String line = null;
             boolean quit = false;
-            while (!quit && (line = reader.readLine("MyDB> ")) != null) {
+            while (!quit) {
+                System.out.print("MyDB> ");
+                if (scanner.hasNextLine()) {
+                    line = scanner.nextLine();
+                }
+                //line = reader.readLine("MyDB> ");
+                if (line == null) {
+                    break;
+                }
                 // 利用分号分隔每一条SQL命令
                 while (line.indexOf(';') >= 0) {
                     // 直到遇到分号才识别出一条完整的SQL命令
@@ -267,7 +276,9 @@ public class Parser {
                     buffer.append("\n");
                 }
             }
+            scanner.close();
         }
+
     }
 
     /**
@@ -525,7 +536,7 @@ public class Parser {
         for (int i=0; i<fromTables.size(); i++) {
             ZFromItem item = fromTables.get(i);
             try {
-                int tableId = Database.getCatalog().getTableId(item.getTable());
+                int tableId = Database.getCatalog().getTableId(item.getTable()); // 若表ID不存在会抛出异常
                 String tableName;
                 if (item.getAlias() != null) {
                     // 该表有别名
