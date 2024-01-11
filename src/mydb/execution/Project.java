@@ -77,6 +77,7 @@ public class Project extends Operator {
         Tuple newTuple = new Tuple(this.tupleDesc);
         for (int i=0; i< tupleDesc.getFieldsNum(); i++) {
             newTuple.setField(i, childTuple.getField(outFields.get(i)));
+            newTuple.setRecordId(childTuple.getRecordId()); // FIXME
         }
         return newTuple;
     }

@@ -418,7 +418,7 @@ public class LogicalPlan {
             LogicalSelectListNode select = selectList.get(i);
             if (select.aggOp != null) {
                 // 进行了聚合操作
-                outFields.add(aggregateField != null ? 1 : 0);
+                outFields.add(aggregateField != null ? 0 : 1);
                 TupleDesc td = node.getTupleDesc();
                 try {
                     // 判断是否有该字段
