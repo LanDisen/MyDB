@@ -35,6 +35,7 @@ public class Delete extends Operator {
         this.child = child;
         this.tupleDesc = new TupleDesc(
                 new Type[] {Type.INT_TYPE}, new String[] {"deletedNum"});
+//        this.tupleDesc = child.getTupleDesc();
         this.deletedTuple = null;
     }
 
