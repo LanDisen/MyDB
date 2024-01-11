@@ -17,6 +17,7 @@ import mydb.storage.IntField;
 import mydb.storage.StringField;
 import mydb.storage.Tuple;
 import mydb.storage.TupleDesc;
+import mydb.storage.lock.LockManager;
 import mydb.transaction.Transaction;
 import mydb.transaction.TransactionException;
 import mydb.transaction.TransactionId;
@@ -182,6 +183,8 @@ public class Parser {
         // 首先将表添加到数据库中
         Database.getCatalog().loadSchema(argv[0]);
         TableStats.computeStats(); // 计算统计信息，用于查询优化
+        // 计算完毕后需要释放所有页面对应事务的锁
+        Database.getBufferPool().lockManager = new LockManager();
 
         String queryFile = null;
 
@@ -241,6 +244,7 @@ public class Parser {
                 System.out.print("MyDB> ");
                 if (scanner.hasNextLine()) {
                     line = scanner.nextLine();
+                    line = line.toLowerCase();
                 }
                 //line = reader.readLine("MyDB> ");
                 if (line == null) {

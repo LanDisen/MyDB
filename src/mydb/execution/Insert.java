@@ -39,6 +39,7 @@ public class Insert extends Operator {
         this.tableId = tableId;
         this.tupleDesc = new TupleDesc(
                 new Type[] {Type.INT_TYPE}, new String[] {"insertedNum"});
+        // this.tupleDesc = child.getTupleDesc();
         this.insertedTuple = null;
     }
 
