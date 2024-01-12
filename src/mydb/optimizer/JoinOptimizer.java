@@ -33,7 +33,7 @@ public class JoinOptimizer {
      * @param joinNode 连接操作结点
      * @param plan1 joinNode的左孩子（子查询计划）
      * @param plan2 joinNode的右孩子（子查询计划）
-     * @return
+     * @return joinResult 最优连接结果
      */
     public static OpIterator bestJoin(LogicalJoinNode joinNode, OpIterator plan1, OpIterator plan2)
             throws ParsingException {
