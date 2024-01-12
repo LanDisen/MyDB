@@ -35,7 +35,7 @@ public class StrHistogram {
             }
         }
         // 确保字符串字段的值在直方图的范围内
-        if (!(s.equals(minStr)) || s.equals(maxStr)) {
+        if (!(s.equals(minStr) || s.equals(maxStr))) {
             int minVal = minValue();
             if (value < minVal) {
                 value = minVal;
